@@ -23,7 +23,7 @@ class Table(models.Model):
 
 class Meal(models.Model):
     table = models.ForeignKey(Table, on_delete=models.PROTECT)
-    start_datetime = models.DateTimeField()
+    start_datetime = models.DateTimeField(auto_now=True)
     end_datetime = models.DateTimeField()
     status = models.BooleanField(default=0)
 
@@ -34,6 +34,7 @@ class MealItem(models.Model):
     qty = models.IntegerField()
     price = models.DecimalField(max_digits=6, decimal_places=2)
     meal = models.ForeignKey(Category, on_delete=models.PROTECT)
+    ordered_at = models.DateTimeField(auto_now=True)
     delivered = models.BooleanField(default=0)
 
     def __str__(self):
