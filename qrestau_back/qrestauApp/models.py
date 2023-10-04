@@ -16,6 +16,7 @@ class Item(models.Model):
         return self.title
 
 class Table(models.Model):
+    slug = models.SlugField()
     title = models.CharField(max_length=255, db_index=True)
 
     def __str__(self):
@@ -23,19 +24,21 @@ class Table(models.Model):
 
 class Meal(models.Model):
     table = models.ForeignKey(Table, on_delete=models.PROTECT)
-    start_datetime = models.DateTimeField(auto_now=True)
-    end_datetime = models.DateTimeField()
-    status = models.BooleanField(default=0)
+    start_datetime = models.DateTimeField(auto_now_add=True)
+    end_datetime = models.DateTimeField(null=True)
+    is_closed = models.BooleanField(default=0, db_index=True)
+    password = models.CharField(max_length=255, db_index=True)
 
     def __str__(self):
-        return self.title
+        return f'{self.id}: {self.table} : {str(self.start_datetime) } : {str(self.is_closed) }'
 
 class MealItem(models.Model):
     qty = models.IntegerField()
-    price = models.DecimalField(max_digits=6, decimal_places=2)
-    meal = models.ForeignKey(Category, on_delete=models.PROTECT)
-    ordered_at = models.DateTimeField(auto_now=True)
-    delivered = models.BooleanField(default=0)
+    price = models.DecimalField(max_digits=6, decimal_places=2, null=True)
+    item = models.ForeignKey(Item, on_delete=models.PROTECT)
+    meal = models.ForeignKey(Meal, on_delete=models.PROTECT, related_name='meal_items')
+    ordered_at = models.DateTimeField(auto_now_add=True)
+    is_delivered = models.BooleanField(default=0)
 
     def __str__(self):
-        return self.title
+        return f'{self.id}: {self.item} : {str(self.meal) } : {str(self.qty) }'
