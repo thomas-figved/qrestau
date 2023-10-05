@@ -1,10 +1,21 @@
 from django.shortcuts import render, get_object_or_404
 from django.utils.timezone import now
-from rest_framework import generics, viewsets, status
+from django.contrib.auth.models import User
+from django.contrib.auth import authenticate
+
+
+from rest_framework import generics, viewsets, status, filters
 from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.authtoken.models import Token
+
+from django_filters.rest_framework import DjangoFilterBackend
+
 
 from .models import Item, Meal, Table, MealItem
-from .serializers import ItemSerializer, MealSerializer, MealItemSerializer
+from .serializers import ItemSerializer, MealSerializer, MealItemSerializer, TableSerializer
+from .helpers import build_username
+from .permissions import IsStaff, IsMealUser
 
 class ItemsView(viewsets.ModelViewSet):
     model = Item
@@ -20,6 +31,10 @@ class MealView(viewsets.ModelViewSet):
     model = Meal
     queryset = Meal.objects.all()
     serializer_class = MealSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['is_closed']
+    ordering = ['start_datetime']
+    permission_classes = [IsStaff]
 
     def create(self, request):
         table_id = request.data.get('table_id')
@@ -37,11 +52,21 @@ class MealView(viewsets.ModelViewSet):
             return Response({"message": "You have to set a password to open the meal"}, status.HTTP_500_INTERNAL_SERVER_ERROR)
 
         new_meal = Meal.objects.create(
-            table= table,
-            password= password,
+            table = table,
+            password = password,
         )
 
         new_meal.save()
+
+        #We create an anonymous user that will be used by the customers joining the meal
+        user = User.objects.create_user(
+            username=build_username(new_meal.id),
+            email='customer@customer.com',
+            password=password
+        )
+        new_meal.anonymous_user = user
+        new_meal.save()
+
 
         return Response({"message": "Meal started successfully"}, status.HTTP_201_CREATED)
 
@@ -50,21 +75,28 @@ class MealDetailsView(viewsets.ModelViewSet):
     model = Meal
     queryset = Meal.objects.all()
     serializer_class = MealSerializer
+    lookup_url_kwarg = "meal_id"
 
-    def close(self, request, pk):
-        to_close_meal = Meal.objects.get(pk=pk)
-
+    def close(self, request, meal_id):
+        to_close_meal = Meal.objects.get(pk=meal_id)
         to_close_meal.is_closed=True
         to_close_meal.end_datetime=now()
-
         to_close_meal.save()
 
         return Response({"message": "Meal successfully closed"}, status.HTTP_200_OK)
+
+    def check_permissions(self, request):
+        if request.method in ['PATCH','DELETE']:
+            self.permission_classes = [IsStaff]
+        else :
+            self.permission_classes = (IsStaff|IsMealUser,)
+        return super().check_permissions(request)
 
 class MealItemView(viewsets.ModelViewSet):
     model = MealItem
     queryset = MealItem.objects.all()
     serializer_class = MealItemSerializer
+    permission_classes = (IsStaff|IsMealUser,)
 
     def get_queryset(self):
         queryset = super(MealItemView, self).get_queryset()
@@ -97,6 +129,8 @@ class MealItemDetailsView(viewsets.ModelViewSet):
     model = MealItem
     queryset = MealItem.objects.all()
     serializer_class = MealItemSerializer
+    permission_classes = (IsStaff,)
+
 
     def get_queryset(self):
         queryset = super(MealItemDetailsView, self).get_queryset()
@@ -105,5 +139,42 @@ class MealItemDetailsView(viewsets.ModelViewSet):
         if meal_id is not None:
             queryset = queryset.filter(meal_id=meal_id)
         return queryset
-    
-    # def partial_update()
+
+class TablesView(viewsets.ModelViewSet):
+    model = Table
+    queryset = Table.objects.all()
+    serializer_class = TableSerializer
+    permission_classes = (IsStaff,)
+
+    def get_queryset(self):
+        queryset = super(TablesView, self).get_queryset()
+
+        is_available = self.request.query_params.get('is_available')
+        if(int(is_available) == 1):
+
+            #we get the current open meals
+            open_meals = Meal.objects.filter(is_closed = 0)
+
+            #we exclude tables that have an open meal on them
+            queryset = queryset.exclude(id__in = [meal.table.id for meal in open_meals])
+        return queryset
+
+class AnonymousLoginView(viewsets.ModelViewSet):
+    def login(self, request, table_id):
+        table = get_object_or_404(Table, id=table_id)
+
+        password = request.data.get('password')
+
+        meal = get_object_or_404(Meal, table = table, is_closed = False)
+
+        if password == "" or meal.password!=password:
+            return Response({"message": "Incorrect password."}, status.HTTP_401_UNAUTHORIZED)
+
+        user = authenticate(request, username=build_username(meal.id), password=password)
+
+        if user is None:
+            return Response({"message": "Incorrect password."}, status.HTTP_401_UNAUTHORIZED)
+
+        token, created = Token.objects.get_or_create(user=user)
+
+        return Response({'auth_token': token.key,'meal_id':meal.id}, status.HTTP_200_OK)

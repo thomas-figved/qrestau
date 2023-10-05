@@ -34,4 +34,4 @@ class MealSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Meal
-        fields = ['id','table_id','table','start_datetime','end_datetime','is_closed', 'meal_items']
+        fields = ['id','table_id','table','start_datetime','end_datetime','is_closed', 'meal_items', 'password']

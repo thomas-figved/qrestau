@@ -4,6 +4,10 @@ from django.urls import path, include
 from . import views
 
 urlpatterns = [
+    path('login/<int:table_id>', views.AnonymousLoginView.as_view({
+        'post': 'login',
+    }), name="anonymous-login"),
+
     path('items', views.ItemsView.as_view({
         'get': 'list',
     }), name="list-items"),
@@ -17,7 +21,7 @@ urlpatterns = [
         'post': 'create',
     }), name="list-meals"),
 
-    path('meals/<int:pk>', views.MealDetailsView.as_view({
+    path('meals/<int:meal_id>', views.MealDetailsView.as_view({
         'get': 'retrieve',
         'patch': 'partial_update',
         'delete': 'close',
@@ -32,4 +36,8 @@ urlpatterns = [
         'get': 'retrieve',
         'patch': 'partial_update',
     }), name="list-meal-items"),
+
+    path('tables', views.TablesView.as_view({
+        'get': 'list',
+    }), name="list-tables"),
 ]
