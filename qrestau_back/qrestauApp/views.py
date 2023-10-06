@@ -177,3 +177,16 @@ class AnonymousLoginView(viewsets.ModelViewSet):
         token, created = Token.objects.get_or_create(user=user)
 
         return Response({'auth_token': token.key,'meal_id':meal.id}, status.HTTP_200_OK)
+
+class CheckTokenView(viewsets.ModelViewSet):
+    permission_classes = (IsAuthenticated,)
+
+    def check_token(self, request):
+        is_staff = len(request.user.groups.filter(name="staff")) > 0
+
+
+        if(not is_staff):
+           #if not staff we have to check for the meal ID to know where we will redirect the user
+           pass
+
+        return Response({'is_staff': is_staff}, status.HTTP_200_OK)

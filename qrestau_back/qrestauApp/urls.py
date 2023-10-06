@@ -24,6 +24,7 @@ urlpatterns = [
     path('swagger<format>/', schema_view.without_ui(cache_timeout=0), name='schema-json'),
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
+
     path('login/<int:table_id>', views.AnonymousLoginView.as_view({
         'post': 'login',
     }), name="anonymous-login"),
@@ -60,4 +61,8 @@ urlpatterns = [
     path('tables', views.TablesView.as_view({
         'get': 'list',
     }), name="list-tables"),
+
+    path('check-token', views.CheckTokenView.as_view({
+      'get': 'check_token'
+    }), name="check-token")
 ]
