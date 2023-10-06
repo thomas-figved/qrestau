@@ -1,0 +1,23 @@
+@mixin breakpoint($point) {
+  @if ( map-has-key($breakpoints, $point) ) {
+    $current_breakpoint: $point;
+
+    @media (min-width: map-get($breakpoints, $point)) { @content ; }
+  }
+
+  @else {
+    @media (min-width: $point) { @content ; }
+  }
+}
+
+//Html Button reset mixin
+@mixin reset_button() {
+  padding: 0;
+  margin: 0;
+  background: none;
+  border: 0;
+  text-transform: none;
+  width: auto;
+  height: auto;
+  cursor: pointer;
+}

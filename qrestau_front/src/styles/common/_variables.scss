@@ -1,0 +1,23 @@
+$fonts: 'Montserrat', sans-serif;
+
+$pureblack: #000;
+$black: #333;
+$gray: #646464;
+$lightgray: #e3e3e3;
+$white: #fff;
+$red: #EC5E80;
+$orange: #EC835E;
+$purple: #835eec;
+$gold: #cdb941;
+
+//Breakpoints
+$breakpoints: (
+  xsmall: 0,
+  small: 480px,
+  medium: 780px,
+  large: 1024px,
+  xlarge: 1260px,
+  xxlarge: 1500px,
+);
+
+$max-width: 1200px;
