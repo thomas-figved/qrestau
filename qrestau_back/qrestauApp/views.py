@@ -3,7 +3,6 @@ from django.utils.timezone import now
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 
-
 from rest_framework import generics, viewsets, status, filters
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
@@ -150,7 +149,7 @@ class TablesView(viewsets.ModelViewSet):
         queryset = super(TablesView, self).get_queryset()
 
         is_available = self.request.query_params.get('is_available')
-        if(int(is_available) == 1):
+        if(is_available == "1"):
 
             #we get the current open meals
             open_meals = Meal.objects.filter(is_closed = 0)
