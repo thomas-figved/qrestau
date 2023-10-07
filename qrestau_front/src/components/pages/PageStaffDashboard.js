@@ -4,13 +4,22 @@ import axios from 'axios';
 
 import {useAPI} from 'contexts/APIContext';
 import { NavLink } from "react-router-dom";
-// import Tables from "components/staff/Tables"
+
+import Table from "components/Table"
 
 function PageStaffDashboard() {
   const [cookies, setCookie] = useCookies([['token']]);
   const {backendURL} = useAPI();
 
-  const [tables, setTables] = useState();
+  const [tables, setTables] = useState([]);
+
+  const getTableClasses = function (table) {
+    let classes=["table"]
+    if(table.meal !== null) {
+      classes.push("table--close");
+    }
+    return classes.join(" ");
+  }
 
   useEffect(()=>{
     try {
@@ -24,7 +33,7 @@ function PageStaffDashboard() {
 
       axios_instance.request(axios_conf)
       .then(function (response) {
-        console.log(response);
+        setTables(response.data);
       })
       .catch((error) => {
         console.log(error);
@@ -32,29 +41,23 @@ function PageStaffDashboard() {
     } catch (error) {
       console.log(error);
     }
-  },[setTables])
+  },[setTables, cookies, backendURL])
 
   return (
-    <div className="dashboard">
-      <div className="dashboard__table">
-        <div className="table">
-          <h2 className="table__title">Title</h2>
-
-          <button >
-            Open
-          </button>
-        </div>
-
-        <div className="table">
-          <h2 className="table__title">Title</h2>
-          {/* 
-            <NavLink>
-              Attend
-            </NavLink> 
-          */}
-        </div>
+    <>
+      <div className="page-wrap__table">
+        { tables.map((table, key)=>{
+          return (
+            <NavLink 
+              to={`/staff/tables/${table.id}`}
+              className={getTableClasses(table)}
+              key={key}>
+              <h2 className="table__title">{table.title}</h2>
+            </NavLink>
+          )
+        })}
       </div>
-    </div>
+    </>
   );
 }
 

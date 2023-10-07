@@ -1,6 +1,6 @@
 import  'styles/main.scss';
 
-import {React, useEffect} from "react";
+import {React, useEffect, useState} from "react";
 import {Route, Routes } from "react-router-dom";
 import {useNavigate} from "react-router-dom";
 import { useCookies } from 'react-cookie';
@@ -9,6 +9,8 @@ import axios from 'axios';
 import PageHome from 'components/pages/PageHome'
 import PageStaffLogin from 'components/pages/PageStaffLogin'
 import PageStaffDashboard from 'components/pages/PageStaffDashboard'
+import PageStaffTableDetails from 'components/pages/PageStaffTableDetails'
+
 import {useAPI} from 'contexts/APIContext';
 
 function App() {
@@ -16,8 +18,10 @@ function App() {
   const navigate = useNavigate();
   const {backendURL} = useAPI();
 
+  const [user, setUser] = useState({});
+
   useEffect(()=>{
-    if('token' in cookies) {
+    if('token' in cookies && !'username' in cookies) {
       try {
         let axios_conf = {
           method: "get",
@@ -29,6 +33,7 @@ function App() {
 
         axios_instance.request(axios_conf)
         .then(function (response) {
+          setUser(response.data.user)
           if(response.data.is_staff) {
             navigate("/staff/dashboard");
           }else {
@@ -42,16 +47,28 @@ function App() {
         console.log(error);
       }
     }
-  },[cookies, backendURL, navigate]);
+  },[cookies, backendURL, navigate, setUser]);
 
   return (
-    <div className="page-wrap">
-      <Routes>
-        <Route element={<PageHome/>} path="/"/>
-        <Route element={<PageStaffLogin/>} path="/staff"/>
-        <Route element = {<PageStaffDashboard/>} path="/staff/dashboard"/>
-      </Routes>
-    </div>
+    <>
+      <header className="header">
+        {
+          "username" in user ?
+            <div className="header__login">
+              Logged in as {user.username}
+            </div>
+          :""
+        }
+      </header>
+      <div className="page-wrap">
+        <Routes>
+          <Route element={<PageHome/>} path="/"/>
+          <Route element={<PageStaffLogin/>} path="/staff"/>
+          <Route element={<PageStaffTableDetails/>} path="/staff/tables/:table_id"/>
+          <Route element = {<PageStaffDashboard/>} path="/staff/dashboard"/>
+        </Routes>
+      </div>
+    </>
   );
 }
 

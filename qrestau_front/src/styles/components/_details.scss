@@ -1,0 +1,10 @@
+.details {
+  &__button {
+    display: flex;
+    justify-content: flex-start;
+
+    .button:not(:last-child) {
+      margin-right: 5px;
+    }
+  }
+}

@@ -1,5 +1,15 @@
 .page-wrap {
   margin: 50px auto 0;
   width: 100%;
+  padding: 0 20px;
   max-width: 1200px;
+
+  &__table {
+    display: flex;
+    flex-direction: column;
+
+    .table:not(:last-child) {
+      margin-bottom: 20px;
+    }
+  }
 }

@@ -1,0 +1,36 @@
+.button {
+  @include reset_button();
+
+  display: block;
+  border: 2px solid var(--primary-color);
+  padding: 10px 30px;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: bold;
+  color: $white;
+  background-color: var(--primary-color);
+
+  @include breakpoint(large) {
+    font-size: 20px;
+  }
+
+  &:hover {
+    color: var(--primary-color);
+    background-color: $white;
+  }
+
+  &--active {
+    border: 2px solid var(--secondary-color);
+    background-color: var(--secondary-color);
+    transition: none;
+
+    i {
+      transition: none;
+    }
+
+    &:hover {
+      color: $white;
+      background-color: var(--secondary-color);
+    }
+  }
+}

@@ -1,0 +1,15 @@
+.table {
+  border: 1px solid $gray;
+  padding: 10px;
+  background-color: var(--open-color);
+
+  &--close {
+    background-color: var(--close-color);
+
+  }
+
+  &__title {
+    margin: 0;
+    text-align: center;
+  }
+}
