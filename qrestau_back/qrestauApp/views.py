@@ -12,7 +12,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 
 
 from .models import Item, Meal, Table, MealItem
-from .serializers import ItemSerializer, MealSerializer, MealItemSerializer, TableSerializer
+from .serializers import ItemSerializer, MealSerializer, MealItemSerializer, TableSerializer, UserSerializer
 from .helpers import build_username
 from .permissions import IsStaff, IsMealUser
 
@@ -158,6 +158,12 @@ class TablesView(viewsets.ModelViewSet):
             queryset = queryset.exclude(id__in = [meal.table.id for meal in open_meals])
         return queryset
 
+class TableDetailsView(viewsets.ModelViewSet):
+    model = Table
+    queryset = Table.objects.all()
+    serializer_class = TableSerializer
+    permission_classes = (IsStaff,)
+
 class AnonymousLoginView(viewsets.ModelViewSet):
     def login(self, request, table_id):
         table = get_object_or_404(Table, id=table_id)
@@ -180,13 +186,16 @@ class AnonymousLoginView(viewsets.ModelViewSet):
 
 class CheckTokenView(viewsets.ModelViewSet):
     permission_classes = (IsAuthenticated,)
+    model = User
+    serializer_class = UserSerializer
 
     def check_token(self, request):
         is_staff = len(request.user.groups.filter(name="staff")) > 0
-
 
         if(not is_staff):
            #if not staff we have to check for the meal ID to know where we will redirect the user
            pass
 
-        return Response({'is_staff': is_staff}, status.HTTP_200_OK)
+        serialized_user = self.get_serializer(request.user)
+
+        return Response({'is_staff': is_staff, 'user': serialized_user.data}, status.HTTP_200_OK)

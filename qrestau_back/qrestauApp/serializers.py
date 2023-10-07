@@ -2,6 +2,16 @@ from rest_framework import serializers
 from .models import Item, Category, Table, Meal, MealItem
 from django.contrib.auth.models import User, Group
 
+class GroupSerializer (serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id','title']
+
+class UserSerializer (serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id','username']
+
 class CategorySerializer (serializers.ModelSerializer):
     class Meta:
         model = Category
@@ -16,9 +26,23 @@ class ItemSerializer(serializers.ModelSerializer):
         fields = ['id','title','price','category','category_id']
 
 class TableSerializer(serializers.ModelSerializer):
+    meal = serializers.SerializerMethodField()
+
     class Meta:
         model = Table
-        fields = ['id','title']
+        fields = ['id','title', 'meal']
+
+    def get_meal(self, obj):
+        meal_data = None
+        started_meal = Meal.objects.filter(table_id=obj.id, is_closed=False).first()
+        if started_meal is not None:
+            meal_data = {
+                'id': started_meal.id,
+                'start_datetime': started_meal.start_datetime.strftime('%Y-%m-%d %H:%M:%S'),
+                'password': started_meal.password,
+            }
+
+        return meal_data
 
 
 class MealItemSerializer(serializers.ModelSerializer):

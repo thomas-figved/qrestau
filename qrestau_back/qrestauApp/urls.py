@@ -62,6 +62,10 @@ urlpatterns = [
         'get': 'list',
     }), name="list-tables"),
 
+    path('tables/<int:pk>', views.TableDetailsView.as_view({
+        'get': 'retrieve',
+    }), name="table-detail"),
+
     path('check-token', views.CheckTokenView.as_view({
       'get': 'check_token'
     }), name="check-token")
