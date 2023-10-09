@@ -1,4 +1,5 @@
 import { createContext, useState, useContext } from 'react';
+import { useCookies } from 'react-cookie';
 
 const APIContext = createContext({});
 
@@ -6,9 +7,10 @@ const APIContextProvider =  function ({ children }) {
   // Initialize state
   const [backendURL, setBackendURL] = useState("http://127.0.0.1:8000");
   const [authPrefix, setAuthPrefix] = useState("Token");
+  const [cookies, setCookie] = useCookies(['token']);
 
   return (
-    <APIContext.Provider value={{ backendURL, authPrefix}}>
+    <APIContext.Provider value={{ backendURL, authPrefix, cookies, setCookie}}>
       {children}
     </APIContext.Provider>
   );

@@ -1,9 +1,13 @@
-import {React, useState, useEffect, useRef} from "react";
+import {React, useState, useEffect, useRef, useCallback} from "react";
 import { useCookies } from 'react-cookie';
 import axios from 'axios';
 import {Formik, Form, Field, ErrorMessage} from 'formik';
 import * as Yup from "yup";
 import { NavLink, useParams} from "react-router-dom";
+import { confirmAlert } from 'react-confirm-alert'; // Import
+import 'react-confirm-alert/src/react-confirm-alert.css'; // Import css
+import QRCode from "react-qr-code";
+import ReactToPrint from 'react-to-print';
 
 import {useAPI} from 'contexts/APIContext';
 
@@ -15,14 +19,16 @@ function PageStaffTableDetails(props) {
   const { table_id } = useParams();
 
   const [showForm, setShowForm] = useState(false);
+
   const errorDisplayRef = useRef();
+  const qrcodeRef = useRef();
 
   const OpenTableSchema = Yup.object().shape({
     password: Yup.string()
       .required('Required'),
   });
 
-  useEffect(()=>{
+  const fetch_table_data = useCallback(function() {
     try {
       let axios_conf = {
         method: "get",
@@ -42,10 +48,66 @@ function PageStaffTableDetails(props) {
     } catch (error) {
       console.log(error);
     }
-  },[setTable, cookies, backendURL, table_id])
+  },[setTable, cookies, backendURL, table_id]);
 
-  const handleCloseTable = function(e) {
+  useEffect(()=>{
+    fetch_table_data();
+  },[fetch_table_data])
 
+
+
+  const handleShowForm = function(e) {
+    setShowForm(true);
+  }
+
+  const confirmCloseTable = function() {
+    confirmAlert({
+      title: 'Closing meal.',
+      message: 'Are you sure you want to end this meal ?',
+      buttons: [
+        {
+          label: 'Yes',
+          onClick: () => handleCloseTable()
+        },
+        {
+          label: 'No',
+          onClick: () => alert('Click No')
+        }
+      ]
+    });
+  }
+
+  const handleCloseTable = function() {
+    try {
+      //reset error msg if any
+      errorDisplayRef.current.innerText = "";
+
+      let axios_conf = {
+        method: "delete",
+        url: backendURL + "/api/meals/" + table.meal.id,
+        headers: { Authorization: `Token ${cookies.token}` }
+      };
+
+      let axios_instance = axios.create();
+
+      axios_instance.request(axios_conf)
+      .then(function (response) {
+        fetch_table_data();
+      })
+      .catch((error) => {
+        let error_msg = "";
+
+        if( 'non_field_errors' in error.response.data) {
+          error_msg = error.response.data.non_field_errors.join('<br/>');
+        } else {
+          error_msg = error;
+        }
+
+        errorDisplayRef.current.innerText = error_msg;
+      });
+    } catch (error) {
+      errorDisplayRef.current.innerText = error;
+    }
   }
 
   const handleOpenTable = function(payload) {
@@ -57,13 +119,15 @@ function PageStaffTableDetails(props) {
         method: "post",
         url: backendURL + "/api/meals",
         data: payload,
+        headers: { Authorization: `Token ${cookies.token}` }
       };
 
       let axios_instance = axios.create();
 
       axios_instance.request(axios_conf)
       .then(function (response) {
-        setTable(table);
+        fetch_table_data();
+        setShowForm(false);
       })
       .catch((error) => {
         let error_msg = "";
@@ -88,46 +152,52 @@ function PageStaffTableDetails(props) {
 
       <h1 className="details__title">Table: {table.title}</h1>
 
-      {
-          table.meal !== null ?
-          <div className="details__meal">
-            <div className="details__meal-date">
-              {table.meal.start_datetime}
-            </div>
-            <div className="details__meal__password">
-              {table.meal.password}
-            </div>
-          </div>
-          : ""
-        }
-
-      <div className="details__button">
-        <button className="button">
-          <i class="fa-solid fa-qrcode"></i>
-        </button>
-        {
-          table.meal == null ?
-            <button className="button" onClick={setShowForm(true)}>
-              Open
-            </button>
-          :
-            <>
-              <button className="button">
-                Attend
-              </button>
-              <button className="button" onClick={handleCloseTable}>
-                Close
-              </button>
-            </>
-        }
+      <div className="details__qrcode">
+        <QRCode
+          style={{ height: "auto", maxWidth: "100%", width: "100%" }}
+          value={`${window.location.host}/customer/${table.id}`}
+          ref={qrcodeRef}
+        />
+        <div className="details__qrcode-print">
+          <ReactToPrint
+            // pageStyle={getPageMargins}
+            // onBeforePrint={onBeforePrint}
+            // onBeforeGetContent={onBeforeGetContent}
+            // onAfterPrint={onAfterPrint}
+            trigger={() => {
+              // NOTE: could just as easily return <SomeComponent />. Do NOT pass an `onClick` prop
+              // to the root node of the returned component as it will be overwritten.
+              return <button href="#" className="button"> <i className="fa-solid fa-print"></i> Print</button>;
+            }}
+            content={() => qrcodeRef.current}>
+          </ReactToPrint>
+        </div>
       </div>
+
+      <div className="details__error">
+        <div className="error-msg" ref={errorDisplayRef}>
+        </div>
+      </div>
+
+      {
+        table.meal !== null ?
+        <div className="details__meal">
+          <div className="details__meal-date">
+            {table.meal.start_datetime}
+          </div>
+          <div className="details__meal__password">
+            {table.meal.password}
+          </div>
+        </div>
+        : ""
+      }
 
       {
         showForm ?
           <div className="details__form">
             <Formik
               initialValues={{
-                username: '',
+                table_id: table_id,
                 password: '',
               }}
               onSubmit={handleOpenTable}
@@ -143,17 +213,33 @@ function PageStaffTableDetails(props) {
                   <input type="hidden" name="table_id" value={table_id} />
                   <div className="form-login__row">
                     <button className="button" type="submit">
-                      Login
+                      Confirm creation
                     </button>
                   </div>
-
-                  <div className="form-login__error" ref={errorDisplayRef}></div>
                 </Form>
               )}
             </Formik>
           </div>
         : ""
       }
+
+      <div className="details__button">
+        {
+          table.meal == null ?
+            <button className="button" onClick={handleShowForm}>
+              Start new meal
+            </button>
+          :
+            <>
+              <button className="button">
+                Attend
+              </button>
+              <button className="button" onClick={confirmCloseTable}>
+                Close meal
+              </button>
+            </>
+        }
+      </div>
     </div>
   );
 }

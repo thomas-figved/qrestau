@@ -10,18 +10,19 @@ import PageHome from 'components/pages/PageHome'
 import PageStaffLogin from 'components/pages/PageStaffLogin'
 import PageStaffDashboard from 'components/pages/PageStaffDashboard'
 import PageStaffTableDetails from 'components/pages/PageStaffTableDetails'
+import PageCustomerLogin from 'components/pages/PageCustomerLogin'
 
 import {useAPI} from 'contexts/APIContext';
 
 function App() {
-  const [cookies, setCookie] = useCookies([['token']]);
+  const [cookies] = useCookies([['token']]);
   const navigate = useNavigate();
   const {backendURL} = useAPI();
 
-  const [user, setUser] = useState({});
+  const [user, setUser] = useState(null);
 
   useEffect(()=>{
-    if('token' in cookies && !'username' in cookies) {
+    if('token' in cookies && user === null) {
       try {
         let axios_conf = {
           method: "get",
@@ -36,8 +37,9 @@ function App() {
           setUser(response.data.user)
           if(response.data.is_staff) {
             navigate("/staff/dashboard");
+            //Don't redirect if we are not on homepage
           }else {
-            //TODO redirect non staff to its menu page
+            //TODO redirect non staff to their menu page
           }
         })
         .catch((error) => {
@@ -47,13 +49,13 @@ function App() {
         console.log(error);
       }
     }
-  },[cookies, backendURL, navigate, setUser]);
+  },[cookies, backendURL, navigate, setUser, user]);
 
   return (
     <>
       <header className="header">
         {
-          "username" in user ?
+          user !== null ?
             <div className="header__login">
               Logged in as {user.username}
             </div>
@@ -66,6 +68,7 @@ function App() {
           <Route element={<PageStaffLogin/>} path="/staff"/>
           <Route element={<PageStaffTableDetails/>} path="/staff/tables/:table_id"/>
           <Route element = {<PageStaffDashboard/>} path="/staff/dashboard"/>
+          <Route element = {<PageCustomerLogin/>} path="/customer/:table_id"/>
         </Routes>
       </div>
     </>

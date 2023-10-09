@@ -7,4 +7,15 @@
       margin-right: 5px;
     }
   }
+
+  &__qrcode {
+    max-width: 200px;
+    margin: 0 auto 20px;
+  }
+
+  &__qrcode-print {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+  }
 }
