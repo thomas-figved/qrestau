@@ -33,6 +33,10 @@ urlpatterns = [
         'get': 'list',
     }), name="list-items"),
 
+    path('categories', views.CategoriesView.as_view({
+        'get': 'list',
+    }), name="list-categories"),
+
     path('items/<int:pk>', views.ItemsDetailsView.as_view({
         'get': 'retrieve',
     }), name="items-details"),

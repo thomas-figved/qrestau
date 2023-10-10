@@ -11,8 +11,8 @@ from rest_framework.authtoken.models import Token
 from django_filters.rest_framework import DjangoFilterBackend
 
 
-from .models import Item, Meal, Table, MealItem
-from .serializers import ItemSerializer, MealSerializer, MealItemSerializer, TableSerializer, UserSerializer
+from .models import Item, Meal, Table, MealItem, Category
+from .serializers import ItemSerializer, MealSerializer, MealItemSerializer, TableSerializer, UserSerializer, CategorySerializer
 from .helpers import build_username
 from .permissions import IsStaff, IsMealUser
 
@@ -25,6 +25,11 @@ class ItemsDetailsView(viewsets.ModelViewSet):
     model = Item
     queryset = Item.objects.all()
     serializer_class = ItemSerializer
+
+class CategoriesView(viewsets.ModelViewSet):
+    model = Category
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
 
 class MealView(viewsets.ModelViewSet):
     model = Meal
