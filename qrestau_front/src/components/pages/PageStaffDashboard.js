@@ -5,8 +5,6 @@ import axios from 'axios';
 import {useAPI} from 'contexts/APIContext';
 import { NavLink } from "react-router-dom";
 
-import Table from "components/Table"
-
 function PageStaffDashboard() {
   const [cookies, setCookie] = useCookies([['token']]);
   const {backendURL} = useAPI();

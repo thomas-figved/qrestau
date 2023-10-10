@@ -55,7 +55,6 @@ function PageStaffTableDetails(props) {
   },[fetch_table_data])
 
 
-
   const handleShowForm = function(e) {
     setShowForm(true);
   }
@@ -231,9 +230,9 @@ function PageStaffTableDetails(props) {
             </button>
           :
             <>
-              <button className="button">
+              <NavLink to={`/customer/${table_id}/menu`} className="button">
                 Attend
-              </button>
+              </NavLink>
               <button className="button" onClick={confirmCloseTable}>
                 Close meal
               </button>

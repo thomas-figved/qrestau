@@ -1,0 +1,17 @@
+.menu-item {
+  display: flex;
+  padding: 5px 10px;
+  background-color: #e8e8e8;
+
+  &:nth-child(2n) {
+    background-color: #c5c5c5;
+  }
+
+  &__remove {
+    margin-left: auto;
+  }
+
+  &__count {
+    margin: 0 10px;
+  }
+}

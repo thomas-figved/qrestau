@@ -12,4 +12,12 @@
       margin-bottom: 20px;
     }
   }
+
+  &__category {
+    display: flex;
+  }
+
+  &__menu-item {
+    padding: 0;
+  }
 }
