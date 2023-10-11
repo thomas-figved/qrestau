@@ -113,21 +113,49 @@ class MealItemView(viewsets.ModelViewSet):
     def create(self, request, meal_id):
         meal = get_object_or_404(Meal, id=meal_id) #throw 404 if resource doesn't exist
 
-        item_id = request.data.get('item_id')
-        item = get_object_or_404(Item, id=item_id) #throw 404 if resource doesn't exist
+        if(isinstance(request.data, list)):
 
-        new_meal_item = MealItem.objects.create(
-            meal = meal,
-            item = item,
-            qty = request.data.get('qty'),
-            price = item.price,
-            ordered_at = now(),
-            is_delivered = False,
-        )
+            for request_item in request.data:
+                
 
-        new_meal_item.save()
+                item_id = request_item['item_id']
+                item = get_object_or_404(Item, id=item_id) #throw 404 if resource doesn't exist
+               
+                qty = request_item['qty']
 
-        return Response({"message": "Item has been added to the meal"}, status.HTTP_201_CREATED)
+                new_meal_item = MealItem.objects.create(
+                    meal = meal,
+                    item = item,
+                    qty = qty,
+                    price = item.price,
+                    ordered_at = now(),
+                    is_delivered = False,
+                )
+
+                new_meal_item.save()
+
+                message = "Items have been added to the meal"
+
+        else:
+
+            item_id = request.data.get('item_id')
+            item = get_object_or_404(Item, id=item_id) #throw 404 if resource doesn't exist
+
+            new_meal_item = MealItem.objects.create(
+                meal = meal,
+                item = item,
+                qty = request.data.get('qty'),
+                price = item.price,
+                ordered_at = now(),
+                is_delivered = False,
+            )
+
+            new_meal_item.save()
+
+            message = "Item has been added to the meal"
+
+
+        return Response({"message": message}, status.HTTP_201_CREATED)
 
 class MealItemDetailsView(viewsets.ModelViewSet):
     model = MealItem
