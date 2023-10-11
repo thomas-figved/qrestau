@@ -43,7 +43,7 @@ function MenuItem(props) {
         <i className="fa-solid fa-minus"></i>
       </button>
 
-      <div className="menu-item__count">
+      <div className="menu-item__qty">
         {qty}
       </div>
 

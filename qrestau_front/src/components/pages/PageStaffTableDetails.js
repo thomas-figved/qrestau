@@ -224,8 +224,11 @@ function PageStaffTableDetails(props) {
             </button>
           :
             <>
-              <NavLink to={`/customer/${table.meal.id}/menu`} className="button">
-                Attend
+              <NavLink to={`/customer/tables/${table.id}/meals/${table.meal.id}/order`} className="button">
+                Ordered items
+              </NavLink>
+              <NavLink to={`/customer/tables/${table.id}/meals/${table.meal.id}/menu`} className="button">
+                Menu
               </NavLink>
               <button className="button" onClick={confirmCloseTable}>
                 Close meal

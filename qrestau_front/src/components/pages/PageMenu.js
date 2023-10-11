@@ -12,7 +12,7 @@ function PageMenu() {
   const [cookies] = useCookies([['token', 'cart']]);
   const {backendURL} = useAPI();
   const {clearCart, getCartTotal, getCartItemAmount } = useCart();
-  const { meal_id } = useParams();
+  const { meal_id, table_id } = useParams();
 
   const [menuItems, setMenuItems] = useState([]);
   const [filteredMenuItems, setFilteredMenuItems] = useState([])
@@ -95,7 +95,7 @@ function PageMenu() {
     <>
       {/* TODO check user group, only display for staff*/}
       <div className="page-wrap__back">
-        <NavLink to={`/staff/dashboard`} className="button">
+        <NavLink to={`/staff/tables/${table_id}`} className="button">
           Back
         </NavLink>
       </div>
@@ -134,7 +134,7 @@ function PageMenu() {
             Empty cart
           </button>
 
-          <NavLink to={`/customer/${meal_id}/cart`} className="button">
+          <NavLink to={`/customer/tables/${table_id}/meals/${meal_id}/cart`} className="button">
             Review cart
           </NavLink>
         </div>

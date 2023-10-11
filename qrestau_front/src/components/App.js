@@ -13,6 +13,7 @@ import PageStaffTableDetails from 'components/pages/PageStaffTableDetails'
 import PageCustomerLogin from 'components/pages/PageCustomerLogin'
 import PageMenu from 'components/pages/PageMenu'
 import PageCart from 'components/pages/PageCart'
+import PageOrderedItems from 'components/pages/PageOrderedItems'
 
 import {useAPI} from 'contexts/APIContext';
 
@@ -71,8 +72,9 @@ function App() {
           <Route element={<PageStaffTableDetails/>} path="/staff/tables/:table_id"/>
           <Route element = {<PageStaffDashboard/>} path="/staff/dashboard"/>
           <Route element = {<PageCustomerLogin/>} path="/customer/:table_id"/>
-          <Route element = {<PageMenu/>} path="/customer/:meal_id/menu"/>
-          <Route element = {<PageCart/>} path="/customer/:meal_id/cart"/>
+          <Route element = {<PageMenu/>} path="/customer/tables/:table_id/meals/:meal_id/menu"/>
+          <Route element = {<PageCart/>} path="/customer/tables/:table_id/meals/:meal_id/cart"/>
+          <Route element = {<PageOrderedItems/>} path="/customer/tables/:table_id/meals/:meal_id/order"/>
         </Routes>
       </div>
     </>

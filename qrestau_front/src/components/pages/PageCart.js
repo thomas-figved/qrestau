@@ -12,7 +12,7 @@ function PageCart() {
   const [cookies] = useCookies([['token', 'cart']]);
   const {backendURL} = useAPI();
   const {cartItems, clearCart, getCartTotal, getCartItemAmount } = useCart();
-  const { meal_id } = useParams();
+  const { meal_id, table_id } = useParams();
   const navigate = useNavigate();
 
 
@@ -39,7 +39,7 @@ function PageCart() {
       axios_instance.request(axios_conf)
       .then(function (response) {
         clearCart();
-        navigate(`/customer/${meal_id}/menu`);
+        navigate(`/customer/tables/${table_id}/meals/${meal_id}/menu`);
       })
       .catch((error) => {
 
@@ -52,7 +52,7 @@ function PageCart() {
   return (
     <>
       <div className="page-wrap__back">
-        <NavLink to={`/customer/${meal_id}/menu`} className="button">
+        <NavLink to={`/customer/tables/${table_id}/meals/${meal_id}/menu`} className="button">
           Back
         </NavLink>
       </div>
