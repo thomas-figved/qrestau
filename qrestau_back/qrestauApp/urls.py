@@ -60,6 +60,7 @@ urlpatterns = [
     path('meals/<int:meal_id>/meal-items/<int:pk>', views.MealItemDetailsView.as_view({
         'get': 'retrieve',
         'patch': 'partial_update',
+        'delete': 'destroy',
     }), name="list-meal-items"),
 
     path('tables', views.TablesView.as_view({
