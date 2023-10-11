@@ -1,11 +1,12 @@
 .button {
   @include reset_button();
 
-  display: block;
+  display: inline-block;
   border: 2px solid var(--primary-color);
   padding: 10px 30px;
   border-radius: 10px;
   font-size: 16px;
+  line-height: 1.8;
   font-weight: bold;
   color: $white;
   background-color: var(--primary-color);

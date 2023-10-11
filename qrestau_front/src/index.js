@@ -4,6 +4,8 @@ import { BrowserRouter } from 'react-router-dom';
 import App from './components/App';
 import reportWebVitals from './reportWebVitals';
 import APIContextProvider from "contexts/APIContext";
+import CartProvider from "contexts/CartContext";
+
 import { CookiesProvider } from 'react-cookie';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
@@ -12,7 +14,9 @@ root.render(
     <BrowserRouter>
       <CookiesProvider defaultSetOptions={{ path: '/' }}>
         <APIContextProvider>
-          <App />
+          <CartProvider>
+            <App />
+          </CartProvider>
         </APIContextProvider>
       </CookiesProvider>
     </BrowserRouter>

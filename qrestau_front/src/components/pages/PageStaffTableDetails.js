@@ -159,13 +159,7 @@ function PageStaffTableDetails(props) {
         />
         <div className="details__qrcode-print">
           <ReactToPrint
-            // pageStyle={getPageMargins}
-            // onBeforePrint={onBeforePrint}
-            // onBeforeGetContent={onBeforeGetContent}
-            // onAfterPrint={onAfterPrint}
             trigger={() => {
-              // NOTE: could just as easily return <SomeComponent />. Do NOT pass an `onClick` prop
-              // to the root node of the returned component as it will be overwritten.
               return <button href="#" className="button"> <i className="fa-solid fa-print"></i> Print</button>;
             }}
             content={() => qrcodeRef.current}>
@@ -230,7 +224,7 @@ function PageStaffTableDetails(props) {
             </button>
           :
             <>
-              <NavLink to={`/customer/${table_id}/menu`} className="button">
+              <NavLink to={`/customer/${table.meal.id}/menu`} className="button">
                 Attend
               </NavLink>
               <button className="button" onClick={confirmCloseTable}>

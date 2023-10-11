@@ -12,6 +12,7 @@ import PageStaffDashboard from 'components/pages/PageStaffDashboard'
 import PageStaffTableDetails from 'components/pages/PageStaffTableDetails'
 import PageCustomerLogin from 'components/pages/PageCustomerLogin'
 import PageMenu from 'components/pages/PageMenu'
+import PageCart from 'components/pages/PageCart'
 
 import {useAPI} from 'contexts/APIContext';
 
@@ -70,7 +71,8 @@ function App() {
           <Route element={<PageStaffTableDetails/>} path="/staff/tables/:table_id"/>
           <Route element = {<PageStaffDashboard/>} path="/staff/dashboard"/>
           <Route element = {<PageCustomerLogin/>} path="/customer/:table_id"/>
-          <Route element = {<PageMenu/>} path="/customer/:table_id/menu"/>
+          <Route element = {<PageMenu/>} path="/customer/:meal_id/menu"/>
+          <Route element = {<PageCart/>} path="/customer/:meal_id/cart"/>
         </Routes>
       </div>
     </>

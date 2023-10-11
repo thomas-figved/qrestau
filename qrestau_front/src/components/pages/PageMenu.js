@@ -1,15 +1,18 @@
 import {React, useState, useEffect, useCallback} from "react";
 import { useCookies } from 'react-cookie';
-import { NavLink} from "react-router-dom";
+import { NavLink, useParams} from "react-router-dom";
 
 import axios from 'axios';
 import {useAPI} from 'contexts/APIContext';
 import MenuItem from "components/MenuItem";
+import { useCart } from 'contexts/CartContext';
 
 
 function PageMenu() {
-  const [cookies, setCookie] = useCookies([['token', 'cart']]);
+  const [cookies] = useCookies([['token', 'cart']]);
   const {backendURL} = useAPI();
+  const {clearCart, getCartTotal, getCartItemAmount } = useCart();
+  const { meal_id } = useParams();
 
   const [menuItems, setMenuItems] = useState([]);
   const [filteredMenuItems, setFilteredMenuItems] = useState([])
@@ -90,6 +93,13 @@ function PageMenu() {
 
   return (
     <>
+      {/* TODO check user group, only display for staff*/}
+      <div className="page-wrap__back">
+        <NavLink to={`/staff/dashboard`} className="button">
+          Back
+        </NavLink>
+      </div>
+
       <div className="page-wrap__category">
         { categories.map((category, key) => {
           return (
@@ -107,10 +117,30 @@ function PageMenu() {
       <ul className="page-wrap__menu-item">
         { filteredMenuItems.map((item, key) => {
           return (
-            <MenuItem id={item.id} title={item.title} price={item.price}/>
+            <MenuItem key={item.id} item={item}/>
           )
         })}
       </ul>
+
+
+      {
+        getCartItemAmount() > 0 ? 
+
+        <div className="page-wrap__cart-summary">
+          items in cart = {getCartItemAmount()} <br/>
+          cart total = {getCartTotal()} <br/>
+
+          <button className="button" onClick={clearCart}>
+            Empty cart
+          </button>
+
+          <NavLink to={`/customer/${meal_id}/cart`} className="button">
+            Review cart
+          </NavLink>
+        </div>
+        :""
+      }
+
     </>
   );
 }
