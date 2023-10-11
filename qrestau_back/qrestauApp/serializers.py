@@ -46,9 +46,12 @@ class TableSerializer(serializers.ModelSerializer):
 
 
 class MealItemSerializer(serializers.ModelSerializer):
+    item_id = serializers.IntegerField(write_only=True)
+    item = ItemSerializer(read_only=True)
+
     class Meta:
         model = MealItem
-        fields = ['id','qty','price','ordered_at','is_delivered']
+        fields = ['id','qty','price','ordered_at','is_delivered', 'item_id', 'item']
 
 class MealSerializer(serializers.ModelSerializer):
     table_id = serializers.IntegerField(write_only=True)
