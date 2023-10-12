@@ -10,7 +10,7 @@ import { useCart } from 'contexts/CartContext';
 
 function PageMenu() {
   const [cookies] = useCookies([['token', 'cart']]);
-  const {backendURL} = useAPI();
+  const {backendURL, isStaff} = useAPI();
   const {clearCart, getCartTotal, getCartItemAmount } = useCart();
   const { meal_id, table_id } = useParams();
 
@@ -93,12 +93,17 @@ function PageMenu() {
 
   return (
     <>
-      {/* TODO check user group, only display for staff*/}
-      <div className="page-wrap__back">
-        <NavLink to={`/staff/tables/${table_id}`} className="button">
-          Back
+      { isStaff ? 
+        <div className="page-wrap__back">
+          <NavLink to={`/staff/tables/${table_id}`} className="button">
+            Back
+          </NavLink>
+        </div>
+      :
+        <NavLink to={`/customer/tables/${table_id}/meals/${meal_id}/order`} className="button">
+          Ordered items
         </NavLink>
-      </div>
+      }
 
       <div className="page-wrap__category">
         { categories.map((category, key) => {

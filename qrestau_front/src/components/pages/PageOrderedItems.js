@@ -5,13 +5,11 @@ import { NavLink, useParams} from "react-router-dom";
 import axios from 'axios';
 import {useAPI} from 'contexts/APIContext';
 import MealItem from "components/MealItem";
-import { useCart } from 'contexts/CartContext';
 
 
 function PageOrderedItems() {
   const [cookies] = useCookies([['token', 'cart']]);
-  const {backendURL} = useAPI();
-  const {clearCart, getCartTotal, getCartItemAmount } = useCart();
+  const {backendURL, isStaff} = useAPI();
   const { table_id, meal_id } = useParams();
 
   const [mealItems, setMealItems] = useState([]);
@@ -47,22 +45,26 @@ function PageOrderedItems() {
 
 
   useEffect(()=>{
-    console.log("setting total");
-
     setTotal(Math.round(mealItems.reduce((total, mealItem) => total + mealItem.price * mealItem.qty * 100, 0)) / 100);
-
-    console.log("total is", total);
-
   },[mealItems]);
 
   return (
     <>
-      {/* TODO check user group, only display for staff*/}
-      <div className="page-wrap__back">
-        <NavLink to={`/staff/tables/${table_id}`} className="button">
-          Back
-        </NavLink>
-      </div>
+
+      {
+        isStaff ? 
+          <div className="page-wrap__back">
+            <NavLink to={`/staff/tables/${table_id}`} className="button">
+              Back
+            </NavLink>
+          </div>
+        :
+          <div className="page-wrap__back">
+            <NavLink to={`/customer/tables/${table_id}/meals/${meal_id}/menu`} className="button">
+              Back
+            </NavLink>
+          </div>
+      }
 
       <ul className="page-wrap__menu-item">
         { mealItems.map((mealItem, key) => {

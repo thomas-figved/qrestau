@@ -1,24 +1,20 @@
-import { useEffect, useState, useCallback, useRef } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { useCookies } from 'react-cookie';
-import { NavLink, useParams} from "react-router-dom";
+import { useParams} from "react-router-dom";
 
 import axios from 'axios';
 import {useAPI} from 'contexts/APIContext';
-import { useCart } from 'contexts/CartContext';
 
 
 function MenuItem(props) {
   const [cookies] = useCookies([['token', 'cart']]);
-  const {backendURL} = useAPI();
-  const {clearCart, getCartTotal, getCartItemAmount } = useCart();
-  const { table_id, meal_id } = useParams();
+  const {backendURL, isStaff} = useAPI();
+  const { meal_id } = useParams();
 
   const [qty, setQty] = useState(props.mealItem.qty)
   const [isDelivered, setIsDelivered] = useState(props.mealItem.is_delivered)
 
-
-
-  const cancelMealItem = useCallback(function() {
+  const cancelMealItem = function() {
     try {
       let axios_conf = {
         method: "delete",
@@ -38,11 +34,11 @@ function MenuItem(props) {
     } catch (error) {
       console.log(error);
     }
-  });
+  };
+
   const isFirstRender = useRef(true)
 
-  const updateMealItem = useEffect(function() {
-
+  useEffect(function() {
     if (isFirstRender.current) {
       isFirstRender.current = false // toggle flag after first render/mounting
       return;
@@ -53,7 +49,6 @@ function MenuItem(props) {
         'qty': qty,
         'is_delivered': isDelivered,
       }
-      console.log(payload)
 
       let axios_conf = {
         method: "patch",
@@ -83,7 +78,7 @@ function MenuItem(props) {
 
 
   const handleRemoveItem = function(e) {
-    if(qty == 1) {
+    if(qty === 1) {
       cancelMealItem();
     } else {
       setQty(qty -1);
@@ -112,7 +107,7 @@ function MenuItem(props) {
         {isDelivered ? "delivered" : "pending"}
       </div>
 
-      { !isDelivered ? //TODO check if user is staff
+      { !isDelivered && isStaff ? //TODO check if user is staff
         <>
           <button className="menu-item__remove-all" onClick={handleCancelMealItem}>
             <i className="fa-solid fa-xmark"></i>

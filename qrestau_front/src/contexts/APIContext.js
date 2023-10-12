@@ -1,16 +1,39 @@
-import { createContext, useState, useContext } from 'react';
+import { createContext, useState, useContext, useEffect} from 'react';
 import { useCookies } from 'react-cookie';
 
 const APIContext = createContext({});
 
 const APIContextProvider =  function ({ children }) {
   // Initialize state
-  const [backendURL, setBackendURL] = useState("http://127.0.0.1:8000");
-  const [authPrefix, setAuthPrefix] = useState("Token");
-  const [cookies, setCookie] = useCookies(['token']);
+  const [backendURL] = useState("http://127.0.0.1:8000");
+  const [authPrefix] = useState("Token");
+  const [user, setUser] = useState(null);
+
+  const [cookies, setCookie] = useCookies();
+
+  const [isStaff, setIsStaff] = useState(false);
+
+
+  useEffect(()=>{
+    if(user != null) {
+      if(user.groups.length > 0) {
+        setIsStaff(user.groups.some((group)=> group.name === "staff"));
+      }
+    }
+  },[user, setIsStaff])
+
+  const provided = {
+    backendURL,
+    authPrefix,
+    cookies,
+    setCookie,
+    user,
+    setUser,
+    isStaff,
+  }
 
   return (
-    <APIContext.Provider value={{ backendURL, authPrefix, cookies, setCookie}}>
+    <APIContext.Provider value={provided}>
       {children}
     </APIContext.Provider>
   );

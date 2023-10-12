@@ -1,4 +1,4 @@
-import {React, useRef, useEffect} from "react";
+import {React, useRef} from "react";
 import { useCookies } from 'react-cookie';
 import {useNavigate} from "react-router-dom";
 
@@ -8,6 +8,7 @@ import {Formik, Form, Field, ErrorMessage} from 'formik';
 import * as Yup from "yup";
 
 function PageStaffLogin() {
+  // eslint-disable-next-line
   const [cookies, setCookies] = useCookies(['token']);
   const errorDisplayRef = useRef();
   const navigate = useNavigate();

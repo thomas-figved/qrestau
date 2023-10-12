@@ -12,7 +12,7 @@ import ReactToPrint from 'react-to-print';
 import {useAPI} from 'contexts/APIContext';
 
 function PageStaffTableDetails(props) {
-  const [cookies, setCookie] = useCookies([['token']]);
+  const [cookies] = useCookies([['token']]);
   const {backendURL} = useAPI();
 
   const [table, setTable] = useState(null);
@@ -149,12 +149,18 @@ function PageStaffTableDetails(props) {
   return (
     <div className="details">
 
+      <div className="page-wrap__back">
+        <NavLink to={`/staff/dashboard`} className="button">
+          Back
+        </NavLink>
+      </div>
+
       <h1 className="details__title">Table: {table.title}</h1>
 
       <div className="details__qrcode">
         <QRCode
           style={{ height: "auto", maxWidth: "100%", width: "100%" }}
-          value={`${window.location.host}/customer/${table.id}`}
+          value={`${window.location.host}/customer/tables/${table.id}`}
           ref={qrcodeRef}
         />
         <div className="details__qrcode-print">
