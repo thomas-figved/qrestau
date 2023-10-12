@@ -20,16 +20,19 @@ class ItemsView(viewsets.ModelViewSet):
     model = Item
     queryset = Item.objects.all()
     serializer_class = ItemSerializer
+    permission_classes = (IsMealUser|IsStaff,)
 
 class ItemsDetailsView(viewsets.ModelViewSet):
     model = Item
     queryset = Item.objects.all()
     serializer_class = ItemSerializer
+    permission_classes = (IsMealUser|IsStaff,)
 
 class CategoriesView(viewsets.ModelViewSet):
     model = Category
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
+    permission_classes = (IsMealUser|IsStaff,)
 
 class MealView(viewsets.ModelViewSet):
     model = Meal
@@ -218,7 +221,7 @@ class AnonymousLoginView(viewsets.ModelViewSet):
         return Response({'auth_token': token.key,'meal_id':meal.id}, status.HTTP_200_OK)
 
 class CheckTokenView(viewsets.ModelViewSet):
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (IsMealUser|IsStaff,)
     model = User
     serializer_class = UserSerializer
 
@@ -231,4 +234,19 @@ class CheckTokenView(viewsets.ModelViewSet):
 
         serialized_user = self.get_serializer(request.user)
 
-        return Response({'is_staff': is_staff, 'user': serialized_user.data}, status.HTTP_200_OK)
+        # authorized_meal_id = 0
+        # authorized_table_id = 0
+        # meals = Meal.objects.filter(anonymous_user=request.user)
+
+        # if len(meals) > 0:
+        #     authorized_meal_id = meals[0].id
+        #     authorized_table_id = meals[0].table.id
+
+        response_dict= {
+            'is_staff': is_staff,
+            'user': serialized_user.data,
+            # 'authorized_meal_id': authorized_meal_id,
+            # 'authorized_table_id': authorized_table_id,
+        }
+
+        return Response(response_dict, status.HTTP_200_OK)

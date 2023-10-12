@@ -22,7 +22,16 @@ class IsMealUser(PermissionBase):
 
         if("meal_id" in view.kwargs):
             meal = Meal.objects.get(id=view.kwargs["meal_id"])
-            if request.user == meal.anonymous_user:
+            if request.user == meal.anonymous_user and meal.is_closed == False:
+                return True
+            else:
+                #user trying to access a different meal
+                return False
+        else:
+            #check that at least one meal is open with the corresponding user
+            meals = Meal.objects.filter(anonymous_user=request.user)
+
+            if len(meals) > 0:
                 return True
 
         return False
