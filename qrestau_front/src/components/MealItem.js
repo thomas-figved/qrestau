@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from 'react'
+import { useCallback } from 'react'
 import { useParams} from "react-router-dom";
 
 import axios from 'axios';
@@ -8,9 +8,6 @@ import {useAPI} from 'contexts/APIContext';
 function MealItem(props) {
   const {backendURL, isStaff, getAuthorizationHeader} = useAPI();
   const { meal_id } = useParams();
-
-  const [qty, setQty] = useState(props.mealItem.qty)
-  const [isDelivered, setIsDelivered] = useState(props.mealItem.is_delivered)
 
   const cancelMealItem = useCallback(()=>{
     try {
@@ -36,7 +33,7 @@ function MealItem(props) {
 
   //const isFirstRender = useRef(true)
 
-  const updateItem = useCallback(()=>{
+  const updateItem = useCallback((qty, isDelivered)=>{
     try {
       let payload = {
         'qty': qty,
@@ -62,11 +59,7 @@ function MealItem(props) {
     } catch (error) {
       console.log(error);
     }
-  },[backendURL, getAuthorizationHeader, qty, isDelivered, meal_id, props])
-
-  useEffect(()=>{
-    updateItem()
-  },[qty, isDelivered])
+  },[backendURL, getAuthorizationHeader, meal_id, props])
 
 
   const handleCancelMealItem = function(e) {
@@ -74,19 +67,20 @@ function MealItem(props) {
   }
 
   const handleRemoveItem = function(e) {
-    if(qty === 1) {
+    if(props.mealItem.qty === 1) {
       cancelMealItem();
     } else {
-      setQty(qty -1);
+      updateItem(props.mealItem.qty - 1, props.mealItem.is_delivered)
     }
   }
 
   const handleAddItem = function(e) {
-    setQty(qty + 1);
+    updateItem(props.mealItem.qty + 1, props.mealItem.is_delivered)
   }
 
   const handleSetDelivered = function(e) {
-    setIsDelivered(true)
+    updateItem(props.mealItem.qty, true)
+
   }
 
   return (
@@ -100,10 +94,10 @@ function MealItem(props) {
       </div>
 
       <div className="menu-iten__price">
-        {isDelivered ? "delivered" : "pending"}
+        {props.mealItem.is_delivered ? "delivered" : "pending"}
       </div>
 
-      { !isDelivered && isStaff ? //TODO check if user is staff
+      { !props.mealItem.is_delivered && isStaff ? //TODO check if user is staff
         <>
           <button className="menu-item__remove-all" onClick={handleCancelMealItem}>
             <i className="fa-solid fa-xmark"></i>
@@ -114,7 +108,7 @@ function MealItem(props) {
           </button>
 
           <div className="menu-iten__qty">
-            {qty}
+            {props.mealItem.qty}
           </div>
 
           <button className="menu-item__add" onClick={handleAddItem}>
@@ -129,7 +123,7 @@ function MealItem(props) {
       :
 
         <div className="menu-iten__qty">
-          {qty}
+          {props.mealItem.qty}
         </div>
       }
     </li>
