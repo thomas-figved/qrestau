@@ -1,0 +1,15 @@
+.home {
+  &__title {
+    text-align: center;
+  }
+
+  &__intro {
+    text-align: center;
+    margin: 0 0 40px;
+  }
+
+  &__button {
+    display: flex;
+    justify-content: center;
+  }
+}

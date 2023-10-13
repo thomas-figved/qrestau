@@ -1,0 +1,10 @@
+.section {
+  &__table {
+    display: flex;
+    flex-direction: column;
+
+    .table:not(:last-child) {
+      margin-bottom: 20px;
+    }
+  }
+}

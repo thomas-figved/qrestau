@@ -1,5 +1,4 @@
 import {React, useRef} from "react";
-import { useCookies } from 'react-cookie';
 import {useNavigate} from "react-router-dom";
 
 import axios from 'axios';
@@ -9,10 +8,9 @@ import * as Yup from "yup";
 
 function PageStaffLogin() {
   // eslint-disable-next-line
-  const [cookies, setCookies] = useCookies(['token']);
   const errorDisplayRef = useRef();
   const navigate = useNavigate();
-  const {backendURL} = useAPI();
+  const {backendURL, saveToken} = useAPI();
 
   const StaffLoginSchema = Yup.object().shape({
     username: Yup.string()
@@ -25,6 +23,7 @@ function PageStaffLogin() {
     try {
       //reset error msg if any
       errorDisplayRef.current.innerText = "";
+      errorDisplayRef.current.classList.remove('form__error--show');
 
       let axios_conf = {
         method: "post",
@@ -36,7 +35,7 @@ function PageStaffLogin() {
 
       axios_instance.request(axios_conf)
       .then(function (response) {
-        setCookies('token', response.data.auth_token);
+        saveToken(response.data.auth_token)
         navigate("/staff/dashboard");
       })
       .catch((error) => {
@@ -49,14 +48,21 @@ function PageStaffLogin() {
         }
 
         errorDisplayRef.current.innerText = error_msg;
+        errorDisplayRef.current.classList.add('form__error--show');
+
       });
     } catch (error) {
       errorDisplayRef.current.innerText = error;
+      errorDisplayRef.current.classList.add('form__error--show');
+
     }
   }
 
   return (
     <>
+      <div className="page-wrap__title">
+        <h1 className="title">Staff login page</h1>
+      </div>
       <Formik
         initialValues={{
           username: '',
@@ -66,24 +72,24 @@ function PageStaffLogin() {
         validationSchema={StaffLoginSchema}
       >
         {({ errors, touched }) => (
-          <Form className="form-login">
-            <div className="form-login__row">
-              <label htmlFor="username" className="form-login__label">Username</label>
-              <Field id="username" name="username" placeholder="Staff1" className="form-login__input"/>
-              <ErrorMessage component="div" name="username" className="form-login__field-error"/>
+          <Form className="form">
+            <div className="form__row">
+              <label htmlFor="username" className="form__label">Username</label>
+              <Field id="username" name="username" className="form__input"/>
+              <ErrorMessage component="div" name="username" className="form__field-error"/>
             </div>
-            <div className="form-login__row">
-              <label htmlFor="password" className="form-login__label">Password</label>
-              <Field id="password" name="password" type="password" className="form-login__input"/>
-              <ErrorMessage component="div" name="password" className="form-login__field-error"/>
+            <div className="form__row">
+              <label htmlFor="password" className="form__label">Password</label>
+              <Field id="password" name="password" type="password" className="form__input"/>
+              <ErrorMessage component="div" name="password" className="form__field-error"/>
             </div>
-            <div className="form-login__row">
+            <div className="form__button">
               <button className="button" type="submit">
                 Login
               </button>
             </div>
 
-            <div className="form-login__error" ref={errorDisplayRef}></div>
+            <div className="form__error" ref={errorDisplayRef}></div>
           </Form>
         )}
       </Formik>

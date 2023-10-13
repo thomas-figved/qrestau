@@ -1,5 +1,4 @@
 import {React, useState, useEffect, useCallback} from "react";
-import { useCookies } from 'react-cookie';
 import { NavLink, useParams} from "react-router-dom";
 
 import axios from 'axios';
@@ -8,8 +7,7 @@ import MealItem from "components/MealItem";
 
 
 function PageOrderedItems() {
-  const [cookies] = useCookies([['token', 'cart']]);
-  const {backendURL, isStaff} = useAPI();
+  const {backendURL, isStaff, getAuthorizationHeader} = useAPI();
   const { table_id, meal_id } = useParams();
 
   const [mealItems, setMealItems] = useState([]);
@@ -21,7 +19,7 @@ function PageOrderedItems() {
       let axios_conf = {
         method: "get",
         url: `${backendURL}/api/meals/${meal_id}/meal-items`,
-        headers: { Authorization: `Token ${cookies.token}` }
+        headers: getAuthorizationHeader()
       };
 
       let axios_instance = axios.create();
@@ -37,11 +35,11 @@ function PageOrderedItems() {
     } catch (error) {
       console.log(error);
     }
-  },[setMealItems, cookies, backendURL, meal_id]);
+  },[setMealItems, getAuthorizationHeader, backendURL, meal_id]);
 
   useEffect(()=>{
     fetch_meal_items();
-  },[]);
+  },[fetch_meal_items]);
 
 
   useEffect(()=>{

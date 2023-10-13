@@ -147,53 +147,43 @@ function PageStaffTableDetails(props) {
   if(!table) return <p>Fetching...</p>
 
   return (
-    <div className="details">
-
+    <>
       <div className="page-wrap__back">
         <NavLink to={`/staff/dashboard`} className="button">
           Back
         </NavLink>
       </div>
 
-      <h1 className="details__title">Table: {table.title}</h1>
-
-      <div className="details__qrcode">
-        <QRCode
-          style={{ height: "auto", maxWidth: "100%", width: "100%" }}
-          value={`${window.location.host}/customer/tables/${table.id}`}
-          ref={qrcodeRef}
-        />
-        <div className="details__qrcode-print">
-          <ReactToPrint
-            trigger={() => {
-              return <button href="#" className="button"> <i className="fa-solid fa-print"></i> Print</button>;
-            }}
-            content={() => qrcodeRef.current}>
-          </ReactToPrint>
-        </div>
-      </div>
-
-      <div className="details__error">
-        <div className="error-msg" ref={errorDisplayRef}>
-        </div>
-      </div>
+      <h1 className="page-wrap__title">Table: {table.title}</h1>
 
       {
         table.meal !== null ?
-        <div className="details__meal">
-          <div className="details__meal-date">
-            {table.meal.start_datetime}
-          </div>
-          <div className="details__meal__password">
-            {table.meal.password}
-          </div>
+        <div className="page-wrap__description">
+          <dl className="description">
+            <dt className="description__term">
+              Started at:
+            </dt>
+            <dd className="description__detail">
+              {table.meal.start_datetime}
+            </dd>
+          </dl>
+          <dl className="description">
+            <dt className="description__term">
+              Password
+            </dt>
+            <dd className="description__detail">
+              {table.meal.password}
+            </dd>
+          </dl>
         </div>
         : ""
       }
 
+      
+
       {
         showForm ?
-          <div className="details__form">
+          <div className="page-wrap__form">
             <Formik
               initialValues={{
                 table_id: table_id,
@@ -203,18 +193,19 @@ function PageStaffTableDetails(props) {
               validationSchema={OpenTableSchema}
             >
               {({ errors, touched }) => (
-                <Form className="form-login">
-                  <div className="form-login__row">
-                    <label htmlFor="password" className="form-login__label">Password</label>
-                    <Field id="password" name="password" type="text" className="form-login__input"/>
-                    <ErrorMessage component="div" name="password" className="form-login__field-error"/>
+                <Form className="form">
+                  <div className="form__row">
+                    <label htmlFor="password" className="form__label">Password</label>
+                    <Field id="password" name="password" type="text" className="form__input"/>
+                    <ErrorMessage component="div" name="password" className="form__field-error"/>
                   </div>
                   <input type="hidden" name="table_id" value={table_id} />
-                  <div className="form-login__row">
+                  <div className="form__row">
                     <button className="button" type="submit">
                       Confirm creation
                     </button>
                   </div>
+                  <div className="form__error" ref={errorDisplayRef}></div>
                 </Form>
               )}
             </Formik>
@@ -222,7 +213,7 @@ function PageStaffTableDetails(props) {
         : ""
       }
 
-      <div className="details__button">
+      <div className="page-wrap__button">
         {
           table.meal == null ?
             <button className="button" onClick={handleShowForm}>
@@ -236,13 +227,29 @@ function PageStaffTableDetails(props) {
               <NavLink to={`/customer/tables/${table.id}/meals/${table.meal.id}/menu`} className="button">
                 Menu
               </NavLink>
-              <button className="button" onClick={confirmCloseTable}>
+              <button className="button button--error" onClick={confirmCloseTable}>
                 Close meal
               </button>
             </>
         }
       </div>
-    </div>
+
+      <div className="page-wrap__qrcode">
+        <QRCode
+          style={{ height: "auto", maxWidth: "100%", width: "100%" }}
+          value={`${window.location.host}/customer/tables/${table.id}`}
+          ref={qrcodeRef}
+        />
+        <div className="page-wrap__qrcode-print">
+          <ReactToPrint
+            trigger={() => {
+              return <button href="#" className="button"> <i className="fa-solid fa-print"></i> Print</button>;
+            }}
+            content={() => qrcodeRef.current}>
+          </ReactToPrint>
+        </div>
+      </div>
+    </>
   );
 }
 

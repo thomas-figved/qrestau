@@ -1,10 +1,10 @@
 .table {
   border: 1px solid $gray;
   padding: 10px;
-  background-color: var(--open-color);
+  background-color: var(--success-color);
 
   &--close {
-    background-color: var(--close-color);
+    background-color: var(--error-color);
 
   }
 

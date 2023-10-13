@@ -1,5 +1,4 @@
 import React, {useRef} from "react";
-import { useCookies } from 'react-cookie';
 import { useNavigate, useParams } from "react-router-dom";
 
 import axios from 'axios';
@@ -9,8 +8,7 @@ import * as Yup from "yup";
 
 function PageCustomerLogin() {
   // eslint-disable-next-line
-  const [cookies, setCookie] = useCookies(['token']);
-  const {backendURL} = useAPI();
+  const {backendURL, saveToken} = useAPI();
   const { table_id } = useParams();
 
   const errorDisplayRef = useRef();
@@ -36,7 +34,7 @@ function PageCustomerLogin() {
 
       axios_instance.request(axios_conf)
       .then(function (response) {
-        setCookie('token', response.data.auth_token);
+        saveToken(response.data.auth_token);
         navigate(`/customer/tables/${table_id}/meals/${response.data.meal_id}/menu`);
       })
       .catch((error) => {
@@ -75,19 +73,19 @@ function PageCustomerLogin() {
           validationSchema={CustomerLoginSchema}
         >
           {({ errors, touched }) => (
-            <Form className="form-login">
-              <div className="form-login__row">
-                <label htmlFor="password" className="form-login__label">Password</label>
-                <Field id="password" name="password" type="text" className="form-login__input"/>
-                <ErrorMessage component="div" name="password" className="form-login__field-error"/>
+            <Form className="form">
+              <div className="form__row">
+                <label htmlFor="password" className="form__label">Password</label>
+                <Field id="password" name="password" type="text" className="form__input"/>
+                <ErrorMessage component="div" name="password" className="form__field-error"/>
               </div>
-              <div className="form-login__row">
+              <div className="form__row">
                 <button className="button" type="submit">
                   Start ordering
                 </button>
               </div>
 
-              <div className="form-login__error" ref={errorDisplayRef}></div>
+              <div className="form__error" ref={errorDisplayRef}></div>
             </Form>
           )}
         </Formik>

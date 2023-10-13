@@ -5,18 +5,25 @@ import { NavLink } from "react-router-dom";
 function PageHome() {
   return (
     <>
-      <div className="">
-        Home
-      </div>
+      <div className="page-wrap__home">
+        <div className="home">
+          <h1 className="home__title">
+            QR Restau
+          </h1>
+          <p className="home__intro">
+            Please scan the QR Code on your table to start ordering
+          </p>
 
-      <NavLink
-        to="/staff"
-        className={({ isActive, isPending }) =>
-            isPending ? "nav__link nav__link--pending" : isActive ? "nav__link  nav__link--active" : "nav__link"
-        }
-      >
-        For staff
-      </NavLink>
+          <div className="home__button">
+            <NavLink
+              to="/staff"
+              className="button"
+            >
+              Staff Access
+            </NavLink>
+          </div>
+        </div>
+      </div>
     </>
   );
 }

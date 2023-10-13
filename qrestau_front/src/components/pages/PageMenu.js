@@ -1,5 +1,4 @@
 import {React, useState, useEffect, useCallback} from "react";
-import { useCookies } from 'react-cookie';
 import { NavLink, useParams} from "react-router-dom";
 
 import axios from 'axios';
@@ -9,8 +8,7 @@ import { useCart } from 'contexts/CartContext';
 
 
 function PageMenu() {
-  const [cookies] = useCookies([['token', 'cart']]);
-  const {backendURL, isStaff} = useAPI();
+  const {backendURL, isStaff, getAuthorizationHeader} = useAPI();
   const {clearCart, getCartTotal, getCartItemAmount } = useCart();
   const { meal_id, table_id } = useParams();
 
@@ -25,7 +23,7 @@ function PageMenu() {
       let axios_conf = {
         method: "get",
         url: backendURL + "/api/items",
-        headers: { Authorization: `Token ${cookies.token}` }
+        headers: getAuthorizationHeader()
       };
 
       let axios_instance = axios.create();
@@ -40,14 +38,14 @@ function PageMenu() {
     } catch (error) {
       console.log(error);
     }
-  },[backendURL, cookies]);
+  },[backendURL, getAuthorizationHeader]);
 
   const fetchCategories = useCallback(async function() {
     try {
       let axios_conf = {
         method: "get",
         url: backendURL + "/api/categories",
-        headers: { Authorization: `Token ${cookies.token}` }
+        headers: getAuthorizationHeader()
       };
 
       let axios_instance = axios.create();
@@ -63,7 +61,7 @@ function PageMenu() {
     } catch (error) {
       console.log(error);
     }
-  },[backendURL, cookies]);
+  },[backendURL, getAuthorizationHeader]);
 
 
   useEffect(() => {
@@ -71,19 +69,19 @@ function PageMenu() {
     fetchCategories();
   }, [fetchMenuItems,fetchCategories])
 
-  const filterItems = function(category_id) {
+  const filterItems = useCallback(function(category_id) {
     category_id = parseInt(category_id);
     let filteredMenu = menuItems.filter(function(menuitem){
       return menuitem.category.id === category_id;
     });
     setFilteredMenuItems(filteredMenu);
     setActiveCategoryID(category_id);
-  }
+  },[menuItems])
 
 
   useEffect(() => {
     filterItems(activeCategoryID);
-  },[activeCategoryID, menuItems])
+  },[activeCategoryID, filterItems])
 
 
   const handleFilterMenuItems = function(e) {

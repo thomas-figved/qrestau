@@ -1,0 +1,45 @@
+.form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  &__row {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    margin-bottom: 20px;
+  }
+
+  &__label {
+    margin-bottom: 5px;
+    font-size: 20px;
+  }
+
+  &__input {
+    padding: 10px 20px;
+    font-size: 20px;
+  }
+
+  &__field-error {
+    color: var(--error-color)
+  }
+
+  &__button {
+    margin: 10px 0 30px;
+  }
+
+
+  &__error {
+    font-weight: bold;
+    color: var(--error-color);
+    padding: 20px;
+    border: 1px solid var(--error-color);
+    display: none;
+
+    &--show {
+      display: block;
+    }
+  }
+}

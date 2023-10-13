@@ -1,25 +1,23 @@
-import { useEffect, useState, useRef } from 'react'
-import { useCookies } from 'react-cookie';
+import { useState, useCallback, useEffect } from 'react'
 import { useParams} from "react-router-dom";
 
 import axios from 'axios';
 import {useAPI} from 'contexts/APIContext';
 
 
-function MenuItem(props) {
-  const [cookies] = useCookies([['token', 'cart']]);
-  const {backendURL, isStaff} = useAPI();
+function MealItem(props) {
+  const {backendURL, isStaff, getAuthorizationHeader} = useAPI();
   const { meal_id } = useParams();
 
   const [qty, setQty] = useState(props.mealItem.qty)
   const [isDelivered, setIsDelivered] = useState(props.mealItem.is_delivered)
 
-  const cancelMealItem = function() {
+  const cancelMealItem = useCallback(()=>{
     try {
       let axios_conf = {
         method: "delete",
         url: `${backendURL}/api/meals/${meal_id}/meal-items/${props.mealItem.id}`,
-        headers: { Authorization: `Token ${cookies.token}` }
+        headers: getAuthorizationHeader()
       };
 
       let axios_instance = axios.create();
@@ -34,16 +32,11 @@ function MenuItem(props) {
     } catch (error) {
       console.log(error);
     }
-  };
+  },[backendURL, getAuthorizationHeader, meal_id, props])
 
-  const isFirstRender = useRef(true)
+  //const isFirstRender = useRef(true)
 
-  useEffect(function() {
-    if (isFirstRender.current) {
-      isFirstRender.current = false // toggle flag after first render/mounting
-      return;
-    }
-
+  const updateItem = useCallback(()=>{
     try {
       let payload = {
         'qty': qty,
@@ -53,7 +46,7 @@ function MenuItem(props) {
       let axios_conf = {
         method: "patch",
         url: `${backendURL}/api/meals/${meal_id}/meal-items/${props.mealItem.id}`,
-        headers: { Authorization: `Token ${cookies.token}` },
+        headers: getAuthorizationHeader(),
         data: payload,
       };
 
@@ -69,13 +62,16 @@ function MenuItem(props) {
     } catch (error) {
       console.log(error);
     }
-  },[qty, isDelivered]);
+  },[backendURL, getAuthorizationHeader, qty, isDelivered, meal_id, props])
+
+  useEffect(()=>{
+    updateItem()
+  },[qty, isDelivered])
 
 
   const handleCancelMealItem = function(e) {
     cancelMealItem();
   }
-
 
   const handleRemoveItem = function(e) {
     if(qty === 1) {
@@ -140,4 +136,4 @@ function MenuItem(props) {
   )
 }
 
-export default MenuItem;
+export default MealItem;
