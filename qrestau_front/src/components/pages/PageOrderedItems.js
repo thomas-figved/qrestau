@@ -1,45 +1,40 @@
 import {React, useState, useEffect, useCallback} from "react";
 import { NavLink, useParams} from "react-router-dom";
 
-import axios from 'axios';
 import {useAPI} from 'contexts/APIContext';
+import {useAuth} from 'contexts/AuthContext';
+
 import MealItem from "components/MealItem";
 
 
 function PageOrderedItems() {
-  const {backendURL, isStaff, getAuthorizationHeader} = useAPI();
+  const {fetchData} = useAPI();
+  const {isStaff} = useAuth();
+
   const { table_id, meal_id } = useParams();
 
   const [mealItems, setMealItems] = useState([]);
   const [total, setTotal] = useState(0);
 
 
-  const fetch_meal_items = useCallback(function() {
-    try {
-      let axios_conf = {
-        method: "get",
-        url: `${backendURL}/api/meals/${meal_id}/meal-items`,
-        headers: getAuthorizationHeader()
-      };
+  const fetchMealItems = useCallback(function() {
 
-      let axios_instance = axios.create();
-
-      axios_instance.request(axios_conf)
-      .then(function (response) {
-        console.log("fetching");
-        setMealItems(response.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-    } catch (error) {
-      console.log(error);
+    const successCallback = (response) => {
+      setMealItems(response.data);
     }
-  },[setMealItems, getAuthorizationHeader, backendURL, meal_id]);
+
+    fetchData({
+      path: `/api/meals/${meal_id}/meal-items`,
+      method: "get",
+      needsAuth: true,
+      successCallback: successCallback,
+    })
+
+  },[fetchData, meal_id]);
 
   useEffect(()=>{
-    fetch_meal_items();
-  },[fetch_meal_items]);
+    fetchMealItems();
+  },[fetchMealItems]);
 
 
   useEffect(()=>{
@@ -48,7 +43,6 @@ function PageOrderedItems() {
 
   return (
     <>
-
       {
         isStaff ? 
           <div className="page-wrap__back">
@@ -67,7 +61,7 @@ function PageOrderedItems() {
       <ul className="page-wrap__menu-item">
         { mealItems.map((mealItem, key) => {
           return (
-            <MealItem key={mealItem.id} mealItem={mealItem} fetch_meal_items={fetch_meal_items}/>
+            <MealItem key={mealItem.id} mealItem={mealItem} fetch_meal_items={fetchMealItems}/>
           )
         })}
       </ul>

@@ -1,19 +1,18 @@
-import {React, useState, useEffect, useCallback} from "react";
-import { useCookies } from 'react-cookie';
+import {React} from "react";
 import { NavLink, useParams, useNavigate} from "react-router-dom";
 
-import axios from 'axios';
 import {useAPI} from 'contexts/APIContext';
+
 import MenuItem from "components/MenuItem";
 import { useCart } from 'contexts/CartContext';
 
 
 function PageCart() {
-  const [cookies] = useCookies([['token', 'cart']]);
-  const {backendURL} = useAPI();
   const {cartItems, clearCart, getCartTotal, getCartItemAmount } = useCart();
   const { meal_id, table_id } = useParams();
   const navigate = useNavigate();
+
+  const {fetchData} = useAPI();
 
 
   const handleOrderMenuItems = function(e) {
@@ -26,26 +25,18 @@ function PageCart() {
       });
     }
 
-    try {
-      let axios_conf = {
-        method: "post",
-        url: `${backendURL}/api/meals/${meal_id}/meal-items`,
-        headers: { Authorization: `Token ${cookies.token}` },
-        data: payload,
-      };
-
-      let axios_instance = axios.create();
-
-      axios_instance.request(axios_conf)
-      .then(function (response) {
-        clearCart();
-        navigate(`/customer/tables/${table_id}/meals/${meal_id}/menu`);
-      })
-      .catch((error) => {
-
-      });
-    } catch (error) {
+    const successCallback = () => {
+      clearCart();
+      navigate(`/customer/tables/${table_id}/meals/${meal_id}/menu`);
     }
+
+    fetchData({
+      path: `/api/meals/${meal_id}/meal-items`,
+      method: `post`,
+      payload: payload,
+      needsAuth: true,
+      successCallback: successCallback,
+    })
   }
 
 

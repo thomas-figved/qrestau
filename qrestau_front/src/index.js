@@ -5,6 +5,8 @@ import App from './components/App';
 import reportWebVitals from './reportWebVitals';
 import APIContextProvider from "contexts/APIContext";
 import CartProvider from "contexts/CartContext";
+import AuthContextProvider from "contexts/AuthContext";
+
 
 import { CookiesProvider } from 'react-cookie';
 
@@ -14,9 +16,11 @@ root.render(
     <BrowserRouter>
       <CookiesProvider defaultSetOptions={{ path: '/' }}>
         <APIContextProvider>
-          <CartProvider>
-            <App />
-          </CartProvider>
+          <AuthContextProvider>
+            <CartProvider>
+              <App />
+            </CartProvider>
+          </AuthContextProvider>
         </APIContextProvider>
       </CookiesProvider>
     </BrowserRouter>

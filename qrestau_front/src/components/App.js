@@ -1,6 +1,6 @@
 import  'styles/main.scss';
 
-import {React, useEffect} from "react";
+import {React} from "react";
 import {Route, Routes } from "react-router-dom";
 
 import PageHome from 'components/pages/PageHome'
@@ -12,7 +12,7 @@ import PageMenu from 'components/pages/PageMenu'
 import PageCart from 'components/pages/PageCart'
 import PageOrderedItems from 'components/pages/PageOrderedItems'
 
-import {useAPI} from 'contexts/APIContext';
+// import {useAuth} from 'contexts/AuthContext';
 
 import Header from 'components/Header';
 
@@ -20,11 +20,6 @@ import Header from 'components/Header';
 
 function App() {
   // eslint-disable-next-line
-  const {checkToken} = useAPI();
-
-  useEffect(()=>{
-    checkToken()
-  },[checkToken]);
 
   return (
     <>

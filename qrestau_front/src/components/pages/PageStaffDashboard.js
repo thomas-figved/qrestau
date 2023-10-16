@@ -1,5 +1,4 @@
 import {React, useEffect, useState} from "react";
-import axios from 'axios';
 
 import {useAPI} from 'contexts/APIContext';
 import { NavLink } from "react-router-dom";
@@ -14,31 +13,23 @@ const getTableClasses = function (table) {
 }
 
 function PageStaffDashboard() {
-  const {backendURL, getAuthorizationHeader} = useAPI();
+  const {fetchData} = useAPI();
 
   const [tables, setTables] = useState([]);
 
   useEffect(()=>{
-    try {
-      let axios_conf = {
-        method: "get",
-        url: backendURL + "/api/tables",
-        headers: getAuthorizationHeader()
-      };
 
-      let axios_instance = axios.create();
-
-      axios_instance.request(axios_conf)
-      .then(function (response) {
-        setTables(response.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-    } catch (error) {
-      console.log(error);
+    const successCallback = (response) => {
+      setTables(response.data);
     }
-  },[setTables, getAuthorizationHeader, backendURL])
+
+    fetchData({
+      path: "/api/tables",
+      method: "get",
+      needsAuth: true,
+      successCallback: successCallback,
+    })
+  },[fetchData])
 
   return (
     <>

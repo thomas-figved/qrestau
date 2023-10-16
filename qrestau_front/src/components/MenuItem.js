@@ -9,7 +9,7 @@ function MenuItem(props) {
 
   useEffect(()=>{
     setQty(getQuantity(props.item))
-  },[cartItems])
+  },[cartItems, getQuantity, props.item])
 
   const handleAddItem = function(e) {
     addToCart(props.item)

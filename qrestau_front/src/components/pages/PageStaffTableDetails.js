@@ -1,6 +1,6 @@
 import {React, useState, useEffect, useRef, useCallback} from "react";
-import { useCookies } from 'react-cookie';
-import axios from 'axios';
+
+
 import {Formik, Form, Field, ErrorMessage} from 'formik';
 import * as Yup from "yup";
 import { NavLink, useParams} from "react-router-dom";
@@ -12,8 +12,7 @@ import ReactToPrint from 'react-to-print';
 import {useAPI} from 'contexts/APIContext';
 
 function PageStaffTableDetails(props) {
-  const [cookies] = useCookies([['token']]);
-  const {backendURL} = useAPI();
+  const {fetchData} = useAPI();
 
   const [table, setTable] = useState(null);
   const { table_id } = useParams();
@@ -28,31 +27,23 @@ function PageStaffTableDetails(props) {
       .required('Required'),
   });
 
-  const fetch_table_data = useCallback(function() {
-    try {
-      let axios_conf = {
-        method: "get",
-        url: backendURL + "/api/tables/" + table_id,
-        headers: { Authorization: `Token ${cookies.token}` }
-      };
+  const fetchTableData = useCallback(function() {
 
-      let axios_instance = axios.create();
-
-      axios_instance.request(axios_conf)
-      .then(function (response) {
-        setTable(response.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-    } catch (error) {
-      console.log(error);
+    const successCallback = (response) =>{
+      setTable(response.data);
     }
-  },[setTable, cookies, backendURL, table_id]);
+
+    fetchData({
+      path: `/api/tables/${table_id}`,
+      method: "get",
+      needsAuth: true,
+      successCallback: successCallback,
+    })
+  },[table_id, fetchData]);
 
   useEffect(()=>{
-    fetch_table_data();
-  },[fetch_table_data])
+    fetchTableData();
+  },[fetchTableData])
 
 
   const handleShowForm = function(e) {
@@ -77,71 +68,59 @@ function PageStaffTableDetails(props) {
   }
 
   const handleCloseTable = function() {
-    try {
-      //reset error msg if any
-      errorDisplayRef.current.innerText = "";
 
-      let axios_conf = {
-        method: "delete",
-        url: backendURL + "/api/meals/" + table.meal.id,
-        headers: { Authorization: `Token ${cookies.token}` }
-      };
-
-      let axios_instance = axios.create();
-
-      axios_instance.request(axios_conf)
-      .then(function (response) {
-        fetch_table_data();
-      })
-      .catch((error) => {
-        let error_msg = "";
-
-        if( 'non_field_errors' in error.response.data) {
-          error_msg = error.response.data.non_field_errors.join('<br/>');
-        } else {
-          error_msg = error;
-        }
-
-        errorDisplayRef.current.innerText = error_msg;
-      });
-    } catch (error) {
-      errorDisplayRef.current.innerText = error;
+    const successCallback = (response) => {
+      fetchTableData();
     }
+
+    const errorCallback = (error) => {
+      let error_msg = "";
+
+      if( 'non_field_errors' in error.response.data) {
+        error_msg = error.response.data.non_field_errors.join('<br/>');
+      } else {
+        error_msg = error;
+      }
+
+      errorDisplayRef.current.innerText = error_msg;
+    }
+
+    fetchData({
+      path: `/api/meals/${table.meal.id}`,
+      method: "delete",
+      needsAuth: true,
+      successCallback: successCallback,
+      errorCallback: errorCallback,
+    })
   }
 
   const handleOpenTable = function(payload) {
-    try {
-      //reset error msg if any
-      errorDisplayRef.current.innerText = "";
 
-      let axios_conf = {
-        method: "post",
-        url: backendURL + "/api/meals",
-        data: payload,
-        headers: { Authorization: `Token ${cookies.token}` }
-      };
-
-      let axios_instance = axios.create();
-
-      axios_instance.request(axios_conf)
-      .then(function (response) {
-        fetch_table_data();
-        setShowForm(false);
-      })
-      .catch((error) => {
-        let error_msg = "";
-
-        if( 'non_field_errors' in error.response.data) {
-          error_msg = error.response.data.non_field_errors.join('<br/>');
-        } else {
-          error_msg = error;
-        }
-
-        errorDisplayRef.current.innerText = error_msg;
-      });
-    } catch (error) {
-      errorDisplayRef.current.innerText = error;
+    const successCallback = (response) => {
+      fetchTableData();
+      setShowForm(false);
     }
+
+    const errorCallback = (error) => {
+      let error_msg = "";
+
+      if( 'non_field_errors' in error.response.data) {
+        error_msg = error.response.data.non_field_errors.join('<br/>');
+      } else {
+        error_msg = error;
+      }
+
+      errorDisplayRef.current.innerText = error_msg;
+    }
+
+    fetchData({
+      path: `/api/meals`,
+      method: "post",
+      needsAuth: true,
+      payload: payload,
+      successCallback: successCallback,
+      errorCallback: errorCallback,
+    })
   }
 
   if(!table) return <p>Fetching...</p>
@@ -179,10 +158,9 @@ function PageStaffTableDetails(props) {
         : ""
       }
 
-      
 
       {
-        showForm ?
+        showForm &&
           <div className="page-wrap__form">
             <Formik
               initialValues={{
@@ -210,7 +188,6 @@ function PageStaffTableDetails(props) {
               )}
             </Formik>
           </div>
-        : ""
       }
 
       <div className="page-wrap__button">

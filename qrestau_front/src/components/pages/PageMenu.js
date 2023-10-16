@@ -1,14 +1,16 @@
 import {React, useState, useEffect, useCallback} from "react";
 import { NavLink, useParams} from "react-router-dom";
 
-import axios from 'axios';
 import {useAPI} from 'contexts/APIContext';
+import {useAuth} from 'contexts/AuthContext';
 import MenuItem from "components/MenuItem";
 import { useCart } from 'contexts/CartContext';
 
 
 function PageMenu() {
-  const {backendURL, isStaff, getAuthorizationHeader} = useAPI();
+  const {fetchData} = useAPI();
+  const {isStaff} = useAuth();
+
   const {clearCart, getCartTotal, getCartItemAmount } = useCart();
   const { meal_id, table_id } = useParams();
 
@@ -18,56 +20,40 @@ function PageMenu() {
   const [activeCategoryID, setActiveCategoryID] = useState(0);
 
 
-  const fetchMenuItems = useCallback (async function() {
-    try {
-      let axios_conf = {
-        method: "get",
-        url: backendURL + "/api/items",
-        headers: getAuthorizationHeader()
-      };
+  const fetchMenuItems = useCallback(() => {
 
-      let axios_instance = axios.create();
-
-      axios_instance.request(axios_conf)
-      .then(function (response) {
-        setMenuItems(response.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-    } catch (error) {
-      console.log(error);
+    const menuSuccessCallback = (response) => {
+      setMenuItems(response.data);
     }
-  },[backendURL, getAuthorizationHeader]);
 
-  const fetchCategories = useCallback(async function() {
-    try {
-      let axios_conf = {
-        method: "get",
-        url: backendURL + "/api/categories",
-        headers: getAuthorizationHeader()
-      };
+    fetchData({
+      path: `/api/items`,
+      method: 'get',
+      needsAuth: true,
+      successCallback: menuSuccessCallback,
+    })
+  },[fetchData])
 
-      let axios_instance = axios.create();
 
-      axios_instance.request(axios_conf)
-      .then(function (response) {
-        setCategories(response.data);
-        setActiveCategoryID(response.data[0].id);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-    } catch (error) {
-      console.log(error);
+  const fetchCategories = useCallback (() => {
+
+    const categoriesSuccessCallback = (response) => {
+      setCategories(response.data);
+      setActiveCategoryID(response.data[0].id);
     }
-  },[backendURL, getAuthorizationHeader]);
 
+    fetchData({
+      path: `/api/categories`,
+      method: 'get',
+      needsAuth: true,
+      successCallback: categoriesSuccessCallback,
+    })
+  }, [fetchData])
 
   useEffect(() => {
     fetchMenuItems();
     fetchCategories();
-  }, [fetchMenuItems,fetchCategories])
+  }, [])
 
   const filterItems = useCallback(function(category_id) {
     category_id = parseInt(category_id);
