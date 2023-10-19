@@ -25,32 +25,35 @@ function MenuItem(props) {
 
 
   return (
-    <li className="menu-item" data-item-id={props.item.id}>
-      <div className="menu-item__title">
+    <div className="menu__item" data-item-id={props.item.id}>
+      <div className="menu__col">
         {props.item.title}
       </div>
-
-      <div className="menu-iten__price">
+      <div className="menu__col menu__col--price">
         {props.item.price}
       </div>
-
-      <button className="menu-item__remove-all" onClick={handleRemoveAll}>
-        <i className="fa-solid fa-xmark"></i>
-      </button>
-
-
-      <button className="menu-item__remove" onClick={handleRemoveItem}>
-        <i className="fa-solid fa-minus"></i>
-      </button>
-
-      <div className="menu-item__qty">
+      <div className="menu__col menu__col--qty">
         {qty}
       </div>
+      <div className="menu__col menu__col--actions">
 
-      <button className="menu-item__add" onClick={handleAddItem}>
-        <i className="fa-solid fa-plus"></i>
-      </button>
-    </li>
+        {
+          qty > 0 &&
+          <>
+            <button className="menu__button menu__button--danger" onClick={handleRemoveAll}>
+              <i className="fa-solid fa-trash"></i>
+            </button>
+            <button className="menu__button" onClick={handleRemoveItem}>
+              <i className="fa-solid fa-minus"></i>
+            </button>
+          </>
+        }
+
+        <button className="menu__button" onClick={handleAddItem}>
+          <i className="fa-solid fa-plus"></i>
+        </button>
+      </div>
+    </div>
   )
 }
 

@@ -1,59 +1,65 @@
 import { createContext, useState, useContext, useEffect, useCallback} from 'react';
 import { useCookies } from 'react-cookie';
-import {useNavigate, useLocation} from "react-router-dom";
 
 import {useAPI} from 'contexts/APIContext';
 
 const AuthContext = createContext({});
 
-const checkTokenPath = '/api/check-token'
-const checkTokenMethod = 'get'
-
 const AuthContextProvider =  function ({ children }) {
   // Initialize state
-  const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [isAuthenticated, setIsAuthenticated] = useState(null)
   const [user, setUser] = useState(null);
   const [cookies, setCookie, removeCookie] = useCookies();
   const [isStaff, setIsStaff] = useState(false);
-  const navigate = useNavigate();
-  const location = useLocation()
+  const [authorizedTableId, setAuthorizedTableId] = useState(null);
+  const [authorizedMealId, setAuthorizedMealId] = useState(null);
   const { fetchData} = useAPI()
+  const [isLoading, setIsLoading] = useState(null)
 
-  const successCallback = useCallback((response)=> {
-    setUser(response.data.user)
-    setIsAuthenticated(true)
+  const logout = useCallback(()=>{
+    removeCookie('token', {path:'/'})
+    setIsAuthenticated(false)
+    setUser(null)
+    setIsStaff(false)
+  },[removeCookie])
 
-    if(response.data.is_staff) {
-      if(location.pathname === "/") {
-        navigate("/staff/dashboard");
+  const checkToken = useCallback(()=>{
+
+    const checkTokenPath = '/api/check-token'
+    const checkTokenMethod = 'get'
+
+    const checkTokenSuccessCallback = (response)=> {
+      setUser(response.data.user)
+      setIsAuthenticated(true)
+      setAuthorizedTableId(response.data.authorized_table_id)
+      setAuthorizedMealId(response.data.authorized_meal_id)
+
+      if(response.data.is_staff) {
+        setIsStaff(true)
       }
+
+      setIsLoading(false)
     }
-  },[location, navigate])
 
-  const errorCallback = useCallback((error)=> {
-    //if permission denied it means that the token isn't valid anymore
-    if('response' in error) {
-
-      if(error.response.status === 403) {
-        removeCookie('token', {path:'/'})
-        if(location.pathname !== "/") {
-          navigate("/");
+    const checkTokenErrorCallback = (error) => {
+      //if permission denied it means that the token isn't valid anymore
+      if('response' in error) {
+        if(error.response.status === 403) {
+          logout()
         }
       }
     }
 
-    console.log(error);
-  }, [navigate, location, removeCookie])
+    setIsLoading(true)
 
-  const checkToken = useCallback(()=>{
     fetchData({
-      path:checkTokenPath, 
-      method:checkTokenMethod, 
-      needsAuth:true, 
-      successCallback:successCallback, 
-      errorCallback:errorCallback
+      path: checkTokenPath,
+      method: checkTokenMethod,
+      needsAuth: true,
+      successCallback: checkTokenSuccessCallback,
+      errorCallback: checkTokenErrorCallback
     })
-  },[fetchData, successCallback, errorCallback])
+  },[fetchData, logout])
 
 
   const saveToken = useCallback((token_value)=>{
@@ -61,25 +67,15 @@ const AuthContextProvider =  function ({ children }) {
   },[setCookie])
 
   useEffect(()=>{
-    if(!isAuthenticated) {
-      if('token' in cookies) {
-        checkToken();
-      }
-      else {
-        //TODO redirect to login
-      }
+    if('token' in cookies) {
+      checkToken();
+    } else {
+      setIsAuthenticated(false)
+      setUser(null)
+      setIsLoading(false)
+      setIsStaff(false)
     }
-  },[cookies, checkToken, isAuthenticated])
-
-
-  useEffect(()=>{
-    if(user != null) {
-      if(user.groups.length > 0) {
-        setIsStaff(user.groups.some((group)=> group.name === "staff"));
-      }
-    }
-  },[user])
-
+  },[cookies, checkToken])
 
   const provided = {
     user,
@@ -87,6 +83,11 @@ const AuthContextProvider =  function ({ children }) {
     isStaff,
     checkToken,
     saveToken,
+    isAuthenticated,
+    authorizedTableId,
+    authorizedMealId,
+    isLoading,
+    logout,
   }
 
   return (

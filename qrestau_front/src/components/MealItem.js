@@ -1,70 +1,54 @@
 import { useCallback } from 'react'
 import { useParams} from "react-router-dom";
 
-import axios from 'axios';
 import {useAPI} from 'contexts/APIContext';
+import {useAuth} from 'contexts/AuthContext';
 
 
 function MealItem(props) {
-  const {backendURL, isStaff, getAuthorizationHeader} = useAPI();
-  const { meal_id } = useParams();
+  const {fetchData} = useAPI()
+  const {isStaff} = useAuth()
+  const { meal_id } = useParams()
 
   const cancelMealItem = useCallback(()=>{
-    try {
-      let axios_conf = {
-        method: "delete",
-        url: `${backendURL}/api/meals/${meal_id}/meal-items/${props.mealItem.id}`,
-        headers: getAuthorizationHeader()
-      };
 
-      let axios_instance = axios.create();
-
-      axios_instance.request(axios_conf)
-      .then(function (response) {
-        props.fetch_meal_items()
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-    } catch (error) {
-      console.log(error);
+    const successCallback = () => {
+      props.fetch_meal_items()
     }
-  },[backendURL, getAuthorizationHeader, meal_id, props])
 
-  //const isFirstRender = useRef(true)
+    fetchData({
+      path: `/api/meals/${meal_id}/meal-items/${props.mealItem.id}`,
+      method: "delete",
+      needsAuth: true,
+      successCallback: successCallback,
+    })
 
-  const updateItem = useCallback((qty, isDelivered)=>{
-    try {
-      let payload = {
-        'qty': qty,
-        'is_delivered': isDelivered,
-      }
+  },[fetchData, meal_id, props])
 
-      let axios_conf = {
-        method: "patch",
-        url: `${backendURL}/api/meals/${meal_id}/meal-items/${props.mealItem.id}`,
-        headers: getAuthorizationHeader(),
-        data: payload,
-      };
+  const updateItem = useCallback((qty, isDelivered) => {
 
-      let axios_instance = axios.create();
-
-      axios_instance.request(axios_conf)
-      .then(function (response) {
-        props.fetch_meal_items()
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-    } catch (error) {
-      console.log(error);
+    let payload = {
+      'qty': qty,
+      'is_delivered': isDelivered,
     }
-  },[backendURL, getAuthorizationHeader, meal_id, props])
+
+    const successCallback = () => {
+      props.fetch_meal_items()
+    }
+
+    fetchData({
+      path: `/api/meals/${meal_id}/meal-items/${props.mealItem.id}`,
+      method: "patch",
+      payload: payload,
+      needsAuth: true,
+      successCallback: successCallback,
+    })
+  },[fetchData, meal_id, props])
 
 
-  const handleCancelMealItem = function(e) {
-    cancelMealItem();
-  }
+  // const handleCancelMealItem = function(e) {
+  //   cancelMealItem();
+  // }
 
   const handleRemoveItem = function(e) {
     if(props.mealItem.qty === 1) {
@@ -84,49 +68,44 @@ function MealItem(props) {
   }
 
   return (
-    <li className="menu-item" data-item-id={props.mealItem.id}>
-      <div className="menu-item__title">
+
+
+    <div className="menu__item" data-item-id={props.mealItem.id}>
+      <div className="menu__col">
         {props.mealItem.item.title}
       </div>
-
-      <div className="menu-iten__price">
+      <div className="menu__col menu__col--price">
         {props.mealItem.price}
       </div>
-
-      <div className="menu-iten__price">
-        {props.mealItem.is_delivered ? "delivered" : "pending"}
+      <div className="menu__col menu__col--qty">
+        {props.mealItem.qty}
+      </div>
+      <div className="menu__col menu__col--status">
+        {props.mealItem.is_delivered ? <i className="fa-solid fa-check"></i> : <i className="fa-solid fa-hourglass"></i>}
       </div>
 
-      { !props.mealItem.is_delivered && isStaff ? //TODO check if user is staff
-        <>
-          <button className="menu-item__remove-all" onClick={handleCancelMealItem}>
-            <i className="fa-solid fa-xmark"></i>
-          </button>
+      {
+        !props.mealItem.is_delivered && isStaff  &&
 
-          <button className="menu-item__remove" onClick={handleRemoveItem}>
+        <div className="menu__col menu__col--actions">
+          {/* <button className="menu__button menu__button--danger" onClick={handleCancelMealItem}>
+            <i className="fa-solid fa-trash"></i>
+          </button> */}
+
+          <button className="menu__button" onClick={handleRemoveItem}>
             <i className="fa-solid fa-minus"></i>
           </button>
 
-          <div className="menu-iten__qty">
-            {props.mealItem.qty}
-          </div>
-
-          <button className="menu-item__add" onClick={handleAddItem}>
+          <button className="menu__button" onClick={handleAddItem}>
             <i className="fa-solid fa-plus"></i>
           </button>
 
-          <button className="menu-item__delivered" onClick={handleSetDelivered}>
-            Set delivered
+          <button className="menu__button" onClick={handleSetDelivered}>
+            <i className="fa-solid fa-check"></i>
           </button>
-        </>
-
-      :
-
-        <div className="menu-iten__qty">
-          {props.mealItem.qty}
         </div>
       }
-    </li>
+    </div>
   )
 }
 

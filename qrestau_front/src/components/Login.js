@@ -11,7 +11,7 @@ function Login({forStaff}) {
   const errorDisplayRef = useRef();
   const navigate = useNavigate();
   const {fetchData} = useAPI();
-  const {saveToken} = useAuth();
+  const {saveToken, checkToken} = useAuth();
   const { table_id } = useParams();
 
   let LoginSchema = Yup.object().shape({
@@ -25,6 +25,7 @@ function Login({forStaff}) {
 
   const successCallback = (response)=>{
     saveToken(response.data.auth_token)
+    checkToken()
 
     if(forStaff) {
       navigate("/staff/dashboard");
@@ -47,7 +48,7 @@ function Login({forStaff}) {
   }
 
 
-  const handleLogin = async function(payload) {
+  const handleLogin = function(payload) {
 
     const path = forStaff ? `/auth/token/login`: `/api/login/${table_id}`
     const method = 'post'

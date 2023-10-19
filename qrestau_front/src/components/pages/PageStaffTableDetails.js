@@ -160,7 +160,7 @@ function PageStaffTableDetails(props) {
 
 
       {
-        showForm &&
+        showForm ?
           <div className="page-wrap__form">
             <Formik
               initialValues={{
@@ -188,42 +188,44 @@ function PageStaffTableDetails(props) {
               )}
             </Formik>
           </div>
+        :
+        <div className="page-wrap__qrcode">
+          <QRCode
+            style={{ height: "auto", maxWidth: "100%", width: "100%" }}
+            value={`${window.location.host}/customer/tables/${table.id}`}
+            ref={qrcodeRef}
+          />
+          <div className="page-wrap__qrcode-print">
+            <ReactToPrint
+              trigger={() => {
+                return <button href="#" className="button"> <i className="fa-solid fa-print"></i> Print</button>;
+              }}
+              content={() => qrcodeRef.current}>
+            </ReactToPrint>
+          </div>
+        </div>
       }
 
-      <div className="page-wrap__button">
-        {
+      <div className="page-wrap__action-bar">
+        <div className="action-bar">
+          {
           table.meal == null ?
             <button className="button" onClick={handleShowForm}>
-              Start new meal
+              Start meal
             </button>
           :
             <>
+              <button className="button button--error" onClick={confirmCloseTable}>
+                End
+              </button>
               <NavLink to={`/customer/tables/${table.id}/meals/${table.meal.id}/order`} className="button">
-                Ordered items
+                Ordered
               </NavLink>
               <NavLink to={`/customer/tables/${table.id}/meals/${table.meal.id}/menu`} className="button">
                 Menu
               </NavLink>
-              <button className="button button--error" onClick={confirmCloseTable}>
-                Close meal
-              </button>
             </>
-        }
-      </div>
-
-      <div className="page-wrap__qrcode">
-        <QRCode
-          style={{ height: "auto", maxWidth: "100%", width: "100%" }}
-          value={`${window.location.host}/customer/tables/${table.id}`}
-          ref={qrcodeRef}
-        />
-        <div className="page-wrap__qrcode-print">
-          <ReactToPrint
-            trigger={() => {
-              return <button href="#" className="button"> <i className="fa-solid fa-print"></i> Print</button>;
-            }}
-            content={() => qrcodeRef.current}>
-          </ReactToPrint>
+          }
         </div>
       </div>
     </>

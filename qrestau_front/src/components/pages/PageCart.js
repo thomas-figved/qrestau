@@ -48,25 +48,52 @@ function PageCart() {
         </NavLink>
       </div>
 
-      <ul className="page-wrap__menu-item">
-        { cartItems.map((item, key) => {
-          return (
-            <MenuItem key={item.id} item={item}/>
-          )
-        })}
-      </ul>
+      <div className="page-wrap__title">
+        <h1 className="title">
+          Review cart
+        </h1>
+      </div>
 
-      <div className="page-wrap__cart-summary">
-          items in cart = {getCartItemAmount()} <br/>
-          cart total = {getCartTotal()} <br/>
+      <div className="page-wrap__menu">
+        <div className="menu">
+          <div className="menu__header">
+            <div className="menu__col">
+              Product
+            </div>
+            <div className="menu__col menu__col--price">
+              Price
+            </div>
+            <div className="menu__col menu__col--qty">
+              Qty
+            </div>
+            <div className="menu__col menu__col--actions">
+            </div>
+          </div>
+          { cartItems.map((item, key) => {
+            return (
+              <MenuItem key={item.id} item={item}/>
+            )
+          })}
+        </div>
+      </div>
 
-          <button className="button" onClick={clearCart}>
-            Delete cart
+      <div className="page-wrap__action-bar">
+        <div className="action-bar">
+          <button className="button button--error" onClick={clearCart}>
+            <i className="fa-solid fa-trash"></i>
           </button>
+
+          <div className="action-bar__total">
+            Total: {getCartTotal()}
+          </div>
 
           <button className="button" onClick={handleOrderMenuItems}>
             Order
+            <div className="button__cart-count">
+                {getCartItemAmount()}
+              </div>
           </button>
+        </div>
       </div>
     </>
   );

@@ -1,0 +1,66 @@
+.menu {
+  width: 100%;
+
+  &__header {
+    display: flex;
+    border-bottom: 1px solid var(--text-color);
+    padding-bottom: 5px;
+    margin-bottom: 5px;
+    font-weight: bold;
+  }
+
+  &__col {
+    width: 25%;
+    padding: 5px 5px;
+    font-size: 14px;
+
+    &--price {
+      width: 50px;
+    }
+
+    &--qty {
+      width: 35px;
+    }
+
+    &--status {
+      width: 60px;
+    }
+
+    &--actions {
+      flex-grow: 1;
+      display: flex;
+      justify-content: flex-end;
+    }
+  }
+
+  &__item {
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid var(--text-color)
+  }
+
+  &__button {
+    @include reset_button();
+
+    border: 2px solid var(--primary-color);
+    width: 40px;
+    height: 40px;
+    line-height: 20px;
+    text-align: center;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: bold;
+    color: $white;
+    background-color: var(--primary-color);
+  
+    &--danger {
+      background-color: var(--error-color);
+      border: 2px solid var(--error-color);
+    }
+
+
+    &:not(:last-child) {
+      margin-right: 5px;
+    }
+  }
+}

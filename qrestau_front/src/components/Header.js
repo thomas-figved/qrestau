@@ -1,22 +1,24 @@
-import {useAPI} from 'contexts/APIContext';
+import {useAuth} from 'contexts/AuthContext';
 
 
 function Header(props) {
-  const {isStaff, user} = useAPI();
+  const {isStaff, isAuthenticated, user, logout} = useAuth();
 
   return (
-    isStaff ?
+    isAuthenticated &&
       <header className="header">
-        <div className="header__login">
-          Logged in as {user.username}
+        <div className="header__button">
+          <button className="button" onClick={logout}>
+            <i className="fa-solid fa-arrow-right-from-bracket"></i> Logout
+          </button>
         </div>
-        {/* <button className="header__hamburger" onClick={toggleNav}>
-          <div className="hamburger__stroke"></div>
-          <div className="hamburger__stroke"></div>
-          <div className="hamburger__stroke"></div>
-        </button> */}
+        {
+          isStaff &&
+          <div className="header__login">
+            Logged in as {user.username}
+          </div>
+        }
       </header>
-    : <></>
   )
 }
 

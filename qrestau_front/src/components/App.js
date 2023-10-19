@@ -15,11 +15,11 @@ import PageOrderedItems from 'components/pages/PageOrderedItems'
 // import {useAuth} from 'contexts/AuthContext';
 
 import Header from 'components/Header';
+import ProtectedRoute from 'components/ProtectedRoute'
 
 
 
 function App() {
-  // eslint-disable-next-line
 
   return (
     <>
@@ -28,12 +28,36 @@ function App() {
         <Routes>
           <Route element={<PageHome/>} path="/"/>
           <Route element={<PageStaffLogin/>} path="/staff"/>
-          <Route element={<PageStaffTableDetails/>} path="/staff/tables/:table_id"/>
-          <Route element = {<PageStaffDashboard/>} path="/staff/dashboard"/>
           <Route element = {<PageCustomerLogin/>} path="/customer/tables/:table_id"/>
-          <Route element = {<PageMenu/>} path="/customer/tables/:table_id/meals/:meal_id/menu"/>
-          <Route element = {<PageCart/>} path="/customer/tables/:table_id/meals/:meal_id/cart"/>
-          <Route element = {<PageOrderedItems/>} path="/customer/tables/:table_id/meals/:meal_id/order"/>
+
+          {/* need auth pages (either staff or customer) */}
+          <Route element = {
+            <ProtectedRoute forStaff={false}>
+              <PageMenu/>
+            </ProtectedRoute>
+          } path="/customer/tables/:table_id/meals/:meal_id/menu"/>
+          <Route element = {
+            <ProtectedRoute forStaff={false}>
+              <PageCart/>
+            </ProtectedRoute>
+          } path="/customer/tables/:table_id/meals/:meal_id/cart"/>
+          <Route element = {
+            <ProtectedRoute forStaff={false}>
+              <PageOrderedItems/>
+            </ProtectedRoute>
+          } path="/customer/tables/:table_id/meals/:meal_id/order"/>
+
+          {/* Staff only pages */}
+          <Route element={
+            <ProtectedRoute forStaff={true}>
+              <PageStaffTableDetails/>
+            </ProtectedRoute>
+          } path="/staff/tables/:table_id"/>
+          <Route element = {
+            <ProtectedRoute forStaff={true}>
+              <PageStaffDashboard/>
+            </ProtectedRoute>
+          } path="/staff/dashboard"/>
         </Routes>
       </div>
     </>

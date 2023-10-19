@@ -89,6 +89,12 @@ function PageMenu() {
         </NavLink>
       }
 
+      <div className="page-wrap__title">
+        <h1 className="title">
+          Menu
+        </h1>
+      </div>
+
       <div className="page-wrap__category">
         { categories.map((category, key) => {
           return (
@@ -103,31 +109,51 @@ function PageMenu() {
         })}
       </div>
 
-      <ul className="page-wrap__menu-item">
-        { filteredMenuItems.map((item, key) => {
-          return (
-            <MenuItem key={item.id} item={item}/>
-          )
-        })}
-      </ul>
-
-
-      {
-        getCartItemAmount() > 0 ? 
-
-        <div className="page-wrap__cart-summary">
-          items in cart = {getCartItemAmount()} <br/>
-          cart total = {getCartTotal()} <br/>
-
-          <button className="button" onClick={clearCart}>
-            Empty cart
-          </button>
-
-          <NavLink to={`/customer/tables/${table_id}/meals/${meal_id}/cart`} className="button">
-            Review cart
-          </NavLink>
+      <div className="page-wrap__menu">
+        <div className="menu">
+          <div className="menu__header">
+            <div className="menu__col">
+              Product
+            </div>
+            <div className="menu__col menu__col--price">
+              Price
+            </div>
+            <div className="menu__col menu__col--qty">
+              Qty
+            </div>
+            <div className="menu__col menu__col--actions">
+            </div>
+          </div>
+          { filteredMenuItems.map((item, key) => {
+            return (
+              <MenuItem key={item.id} item={item}/>
+            )
+          })}
         </div>
-        :""
+      </div>
+      {
+        getCartItemAmount() > 0 &&
+
+        <>
+        <div className="page-wrap__action-bar">
+          <div className="action-bar">
+            <button className="button button--error" onClick={clearCart}>
+              <i className="fa-solid fa-trash"></i>
+            </button>
+
+            <div className="action-bar__total">
+              Total: {getCartTotal()}
+            </div>
+
+            <NavLink to={`/customer/tables/${table_id}/meals/${meal_id}/cart`} className="button">
+              <i className="fa-solid fa-cart-shopping"></i>
+              <div className="button__cart-count">
+                {getCartItemAmount()}
+              </div>
+            </NavLink>
+          </div>
+        </div>
+        </>
       }
 
     </>

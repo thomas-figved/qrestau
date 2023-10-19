@@ -58,17 +58,48 @@ function PageOrderedItems() {
           </div>
       }
 
-      <ul className="page-wrap__menu-item">
-        { mealItems.map((mealItem, key) => {
-          return (
-            <MealItem key={mealItem.id} mealItem={mealItem} fetch_meal_items={fetchMealItems}/>
-          )
-        })}
-      </ul>
+      {
+        mealItems.length === 0 ?
+          <div className="page-wrap__msg">
+            No items ordered yet, please use the menu to order items.
+          </div>
+        :
+        <>
 
-      <div className="page-wrap__total">
-        Total: {total}
-      </div>
+        <div className="page-wrap__menu">
+          <div className="menu">
+            <div className="menu__header">
+              <div className="menu__col">
+                Product
+              </div>
+              <div className="menu__col  menu__col--price">
+                Price
+              </div>
+              <div className="menu__col menu__col--qty">
+                Qty
+              </div>
+              <div className="menu__col menu__col--status">
+                Status
+              </div>
+              {
+                isStaff &&
+                <div className="menu__col menu__col--actions">
+                </div>
+              }
+            </div>
+            { mealItems.map((mealItem, key) => {
+              return (
+                <MealItem key={mealItem.id} mealItem={mealItem} fetch_meal_items={fetchMealItems}/>
+              )
+            })}
+          </div>
+        </div>
+
+          <div className="page-wrap__total">
+            Total: {total}
+          </div>
+        </>
+      }
     </>
   );
 }

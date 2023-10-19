@@ -1,6 +1,7 @@
 .button {
   @include reset_button();
 
+  position: relative;
   display: inline-block;
   border: 2px solid var(--primary-color);
   padding: 5px 30px;
@@ -43,5 +44,18 @@
       color: $white;
       background-color: var(--secondary-color);
     }
+  }
+
+  &__cart-count {
+    position: absolute;
+    top: 0;
+    right: 0;
+    //transform: translateY(-100%);
+    background-color: $white;
+    color: var(--text-color);
+    padding: 2px 5px;
+    border: 1px solid var(--primary-color);
+    line-height: 1;
+    border-radius: 10px;
   }
 }

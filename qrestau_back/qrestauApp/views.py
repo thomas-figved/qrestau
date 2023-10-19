@@ -119,11 +119,10 @@ class MealItemView(viewsets.ModelViewSet):
         if(isinstance(request.data, list)):
 
             for request_item in request.data:
-                
+
 
                 item_id = request_item['item_id']
                 item = get_object_or_404(Item, id=item_id) #throw 404 if resource doesn't exist
-               
                 qty = request_item['qty']
 
                 new_meal_item = MealItem.objects.create(
@@ -234,19 +233,22 @@ class CheckTokenView(viewsets.ModelViewSet):
 
         serialized_user = self.get_serializer(request.user)
 
-        # authorized_meal_id = 0
-        # authorized_table_id = 0
-        # meals = Meal.objects.filter(anonymous_user=request.user)
+        authorized_meal_id = 0
+        authorized_table_id = 0
+        meals = Meal.objects.filter(anonymous_user=request.user)
 
-        # if len(meals) > 0:
-        #     authorized_meal_id = meals[0].id
-        #     authorized_table_id = meals[0].table.id
+        if len(meals) > 0:
+            if(meals[0].is_closed == True):
+                return Response({'message':'This meal already ended'}, status.HTTP_403_FORBIDDEN)
+
+            authorized_meal_id = meals[0].id
+            authorized_table_id = meals[0].table.id
 
         response_dict= {
             'is_staff': is_staff,
             'user': serialized_user.data,
-            # 'authorized_meal_id': authorized_meal_id,
-            # 'authorized_table_id': authorized_table_id,
+            'authorized_meal_id': authorized_meal_id,
+            'authorized_table_id': authorized_table_id,
         }
 
         return Response(response_dict, status.HTTP_200_OK)

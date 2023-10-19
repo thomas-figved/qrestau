@@ -1,0 +1,13 @@
+.action-bar {
+  background-color: var(--background-color);
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 15px 0;
+  border-top: 1px solid var(--info-color);
+
+  .button:not(:last-child) {
+    margin-right: 5px;
+  }
+}

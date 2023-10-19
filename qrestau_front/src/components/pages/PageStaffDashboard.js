@@ -14,7 +14,6 @@ const getTableClasses = function (table) {
 
 function PageStaffDashboard() {
   const {fetchData} = useAPI();
-
   const [tables, setTables] = useState([]);
 
   useEffect(()=>{

@@ -1,7 +1,7 @@
 .page-wrap {
   margin: 0 auto;
   width: 100%;
-  padding: 50px 20px;
+  padding: 20px 20px 100px;
   max-width: 1200px;
 
   &__home {
@@ -13,19 +13,18 @@
 
   &__category {
     display: flex;
+    margin-bottom: 20px;
   }
 
   &__menu-item {
     padding: 0;
   }
 
-  &__button {
-    display: flex;
-    justify-content: flex-start;
-
-    .button:not(:last-child) {
-      margin-right: 5px;
-    }
+  &__action-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
   }
 
   &__qrcode {
@@ -37,5 +36,14 @@
     display: flex;
     justify-content: center;
     margin-top: 20px;
+  }
+
+  &__back {
+    margin-bottom: 30px;
+  }
+
+  &__total {
+    margin: 20px 0;
+    font-weight: bold;
   }
 }
