@@ -1,4 +1,4 @@
-#QR Restau
+# QR Restau
 
 QR Restau is a virtual menu and ordering system for your restaurant. Manage your menu items and staff in the back office, print a QR Code that you can display on each table and let your customer order from their phone.
 
