@@ -1,3 +1,9 @@
+<!-- TOC --><a name="qrestau"></a>
+# QRestau
+
+**QRestau** is a virtual menu and ordering system for your restaurant. Manage your menu items and staff in the back office, print a QR Code that you can display on each table and let your customers order from their phone.
+
+
 <!-- TOC start (generated with https://github.com/derlin/bitdowntoc) -->
 
 - [QRestau](#qrestau)
@@ -30,19 +36,14 @@
 
 <!-- TOC end -->
 
-<!-- TOC --><a name="qrestau"></a>
-# QRestau
-
-**QRestau** is a virtual menu and ordering system for your restaurant. Manage your menu items and staff in the back office, print a QR Code that you can display on each table and let your customers order from their phone.
-
 <!-- TOC --><a name="try-out-the-app"></a>
-## Try out the app
+# Try out the app
 An instance of **QRestau** is installed at [https://thomasf.dev/qrestau/](https://thomasf.dev/qrestau/)
 
 Refer to the **Usage > As a staff** and **Usage > As a customer** sections for help.
 
 <!-- TOC --><a name="usage"></a>
-## Usage
+# Usage
 There are three types of users that will be using this app:
 1. Admin: will manage staff, menu items and tables by using the backoffice.
 2. Staff (waiters): will attend to tables and help customers ordering.
@@ -50,7 +51,7 @@ There are three types of users that will be using this app:
 
 
 <!-- TOC --><a name="as-an-admin"></a>
-### As an Admin
+## As an Admin
 There is pre-populated data in the SQLITE database that is in the repository. You may use it if you're only looking to try on the app but otherwise we recommend setting up your own database.
 
 All admin actions will have to be done through the django admin screen.
@@ -60,12 +61,12 @@ username: admin
 password: admin
 
 <!-- TOC --><a name="access-the-back-office"></a>
-#### Access the back-office
+### Access the back-office
 Access the backoffice login form at this URL:
 http://localhost:8000/admin/
 
 <!-- TOC --><a name="manage-users"></a>
-#### Manage users
+### Manage users
 Manage users in this screen:
 http://localhost:8000/admin/auth/user/
 
@@ -75,21 +76,21 @@ You do not need to create users for your customers as the system will automatica
 
 
 <!-- TOC --><a name="manage-menu-items"></a>
-#### Manage menu items
+### Manage menu items
 Manage menu items from this screen:
 http://localhost:8000/admin/qrestauApp/item/
 
 <!-- TOC --><a name="manage-tables"></a>
-#### Manage tables
+### Manage tables
 Manage tables fronm this screen:
 http://localhost:8000/admin/qrestauApp/table/
 
 <!-- TOC --><a name="what-about-the-other-models-"></a>
-#### What about the other models ?
+### What about the other models ?
 As an admin you don't need to touch any other data as the system will handle this automatically.
 
 <!-- TOC --><a name="as-a-staff"></a>
-### As a Staff
+## As a Staff
 The staff group represent waiters and other employees of the restaurant that will attend the tables. All actions made by the staff will be made through the front-end.
 
 Default staff account:
@@ -97,18 +98,18 @@ username: staff1
 password: staffstaff
 
 <!-- TOC --><a name="log-in"></a>
-#### Log in
+### Log in
 Staff members can log in through this screen
 http://localhost:3000/staff
 
 <!-- TOC --><a name="the-dashboard"></a>
-#### The dashboard
+### The dashboard
 The dashboard shows a list of tables. A table can be inoccupied, in which case it will have a blue color, or occupied, in orange, meaning that someone is already eating at that table.
 
 http://localhost:3000/staff/dashboard
 
 <!-- TOC --><a name="start-the-meal"></a>
-#### Start the meal
+### Start the meal
 The screen is located at the following URL (You may need to change the table ID)
 http://localhost:3000/staff/tables/1
 
@@ -118,7 +119,7 @@ The staff has to enter a password that they will communicate to the customers. T
 
 
 <!-- TOC --><a name="close-the-meal"></a>
-#### Close the meal
+### Close the meal
 The screen is located at the following URL (You may need to change the table ID):
 http://localhost:3000/staff/tables/1
 
@@ -126,7 +127,7 @@ When the meal is over, to make the table available again to other customers, the
 
 
 <!-- TOC --><a name="order-for-your-clients"></a>
-#### Order for your clients
+### Order for your clients
 The screen is located at the following URL (You may need to change the table ID):
 http://localhost:3000/staff/tables/1
 
@@ -138,7 +139,7 @@ http://localhost:3000/customer/tables/1/meals/20/menu
 You can there chose a menu item from a category and add it to the cart. You then have to review the cart and confirm the order.
 
 <!-- TOC --><a name="edit-not-yet-delivered-ordered-items"></a>
-#### Edit not yet delivered ordered items
+### Edit not yet delivered ordered items
 The screen is located at the following URL (You may need to change the table ID):
 http://localhost:3000/staff/tables/1
 
@@ -150,11 +151,11 @@ http://localhost:3000/customer/tables/1/meals/20/order
 Customers have access to the same screen to review their order but only Staff members can edit/delete an item, or mark them as delivered once they are on the table.
 
 <!-- TOC --><a name="as-a-customer"></a>
-### As a Customer
+## As a Customer
 Customers will only have access to a handeful of the front-end screens.
 
 <!-- TOC --><a name="access-menu"></a>
-#### Access menu
+### Access menu
 After a Staff member start a meal on the customers' table, they will have to give a password to the customers. The customer can then access the login page through a QRCode that should be displayed on their table. The URL should be looking like this (table ID may differ):
 
 http://localhost:3000/customer/tables/4/
@@ -162,7 +163,7 @@ http://localhost:3000/customer/tables/4/
 They can then enter the password and press the **Login** button
 
 <!-- TOC --><a name="add-to-cart"></a>
-#### Add to cart
+### Add to cart
 From the menu screen, customers are available to add items to their cart:
 http://localhost:3000/customer/tables/4/meals/15/menu
 (Table ID and meal ID may differ)
@@ -174,7 +175,7 @@ The cart can also be emptied completely with the bottom left trash button.
 When the user is comfortable with their decision they can press the Cart button to review the entirety of their cart.
 
 <!-- TOC --><a name="confirm-order"></a>
-#### Confirm order
+### Confirm order
 The corresponding screen is located on a similar URL:
 http://localhost:3000/customer/tables/4/meals/15/cart
 (Table ID and meal ID may differ)
@@ -183,7 +184,7 @@ This gives the customer a last change to update their cart. Once the **Order** b
 
 
 <!-- TOC --><a name="ordered-items"></a>
-#### Ordered items
+### Ordered items
 From the Menu item customers can access the Ordered Items view:
 http://localhost:3000/customer/tables/4/meals/15/menu
 (Table ID and meal ID may differ)
@@ -191,11 +192,11 @@ http://localhost:3000/customer/tables/4/meals/15/menu
 This screen's only purpose is to show to customers what they already ordered. They are not able to edit anything from this list.
 
 <!-- TOC --><a name="installation"></a>
-## Installation
+# Installation
 ``git clone git@github.com:thomas-figved/qrestau.git .``
 
 <!-- TOC --><a name="back-end-django"></a>
-### Back end (Django)
+## Back end (Django)
 Get into the back end folder
 
 ``cd qrestau_back``
@@ -213,7 +214,7 @@ Then start the python server
 
 
 <!-- TOC --><a name="front-end-react"></a>
-### Front end (React)
+## Front end (React)
 Get into the front end folder
 
 ``cd qrestau_front``
@@ -242,7 +243,7 @@ You might need to authorize the front-end URL in Django's allowed origins: qrest
 
 
 <!-- TOC --><a name="build-front-end"></a>
-## Build (Front end)
+# Build (Front end)
 Get into the front end folder
 ``cd qrestau_front``
 
@@ -253,14 +254,15 @@ Run the build
 ``npm run build``
 
 <!-- TOC --><a name="technical-details"></a>
-## Technical details
+# Technical details
 
 
 <!-- TOC --><a name="todo"></a>
-## TODO
-1. API Throttling
-2. Testing both front and back
-3. Websocket to update order list
-4. Add item descriptions
-5. Add possibility to give instruction to the chef such as "no sauce" and the like
+# TODO
+1. Error management
+2. API Throttling
+3. Testing both front and back
+4. Websocket to update order list
+5. Add item descriptions
+6. Add possibility to give instruction to the chef such as "no sauce" and the like
 
