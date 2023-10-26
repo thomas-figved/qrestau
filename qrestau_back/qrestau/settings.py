@@ -155,7 +155,11 @@ DJOSER = {
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000',
     'http://127.0.0.1:3000',
-    'ljpepka.cluster030.hosting.ovh.net',
+    'https://thomasf.dev',
+    'https://qrestau.thomasf.dev',
+
 ]
 
-ALLOWED_HOSTS = ['ljpepka.cluster030.hosting.ovh.net', '127.0.0.1', 'localhost']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'thomasf.dev','qrestau.thomasf.dev']
+
+CORS_ALLOW_ALL_ORIGINS = True
