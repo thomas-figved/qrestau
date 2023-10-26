@@ -140,7 +140,7 @@ function PageStaffTableDetails(props) {
         <div className="page-wrap__description">
           <dl className="description">
             <dt className="description__term">
-              Started at:
+              Meal started at:
             </dt>
             <dd className="description__detail">
               {table.meal.start_datetime}
@@ -192,7 +192,7 @@ function PageStaffTableDetails(props) {
         <div className="page-wrap__qrcode">
           <QRCode
             style={{ height: "auto", maxWidth: "100%", width: "100%" }}
-            value={`${window.location.host}/customer/tables/${table.id}`}
+            value={`${window.location.protocol}//${window.location.host}${process.env.PUBLIC_URL}/customer/tables/${table.id}`}
             ref={qrcodeRef}
           />
           <div className="page-wrap__qrcode-print">
