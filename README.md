@@ -26,11 +26,13 @@
       + [Add to cart](#add-to-cart)
       + [Confirm order](#confirm-order)
       + [Ordered items](#ordered-items)
+- [Requirements](#requirements)
 - [Installation](#installation)
    * [Back end (Django)](#back-end-django)
    * [Front end (React)](#front-end-react)
 - [Build (Front end)](#build-front-end)
 - [Technical details](#technical-details)
+   * [Model diagram](#model-diagram)
 - [TODO](#todo)
 
 <!-- TOC end -->
@@ -190,6 +192,11 @@ http://localhost:3000/customer/tables/4/meals/15/menu
 
 This screen's only purpose is to show to customers what they already ordered. They are not able to edit anything from this list.
 
+<!-- TOC --><a name="requirements"></a>
+# Requirements
+This app uses React for the front-end and Django for the back-end.
+You will need Nodejs, NPM, and Python > 3.8 on your machine.
+
 <!-- TOC --><a name="installation"></a>
 # Installation
 ``git clone git@github.com:thomas-figved/qrestau.git .``
@@ -254,6 +261,12 @@ Run the build
 
 <!-- TOC --><a name="technical-details"></a>
 # Technical details
+
+<!-- TOC --><a name="model-diagram"></a>
+## Model diagram
+This diagram gives an idea about the structure of the model (but for a more exact description just open /qrestau_back/qrestauApp/models.py)
+
+![QRestau](https://github.com/thomas-figved/qrestau/assets/28971514/41bec913-1d95-471b-aa75-c67fcf11c1f9)
 
 
 <!-- TOC --><a name="todo"></a>
