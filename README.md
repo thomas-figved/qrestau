@@ -42,7 +42,7 @@
 An instance of **QRestau** is installed at [https://thomasf.dev/qrestau/](https://thomasf.dev/qrestau/)
 
 Refer to the **Usage > As a staff** and **Usage > As a customer** sections for help.
-
+___
 <!-- TOC --><a name="usage"></a>
 # Usage
 There are three types of users that will be using this app:
@@ -89,7 +89,7 @@ http://localhost:8000/admin/qrestauApp/table/
 <!-- TOC --><a name="what-about-the-other-models-"></a>
 ### What about the other models ?
 As an admin you don't need to touch any other data as the system will handle this automatically.
-
+___
 <!-- TOC --><a name="as-a-staff"></a>
 ## As a Staff
 The staff group represent waiters and other employees of the restaurant that will attend the tables. All actions made by the staff will be made through the front-end.
@@ -150,7 +150,7 @@ http://localhost:3000/customer/tables/1/meals/20/order
 (table and meal ID may differ)
 
 Customers have access to the same screen to review their order but only Staff members can edit/delete an item, or mark them as delivered once they are on the table.
-
+___
 <!-- TOC --><a name="as-a-customer"></a>
 ## As a Customer
 Customers will only have access to a handeful of the front-end screens.
@@ -191,12 +191,12 @@ http://localhost:3000/customer/tables/4/meals/15/menu
 (Table ID and meal ID may differ)
 
 This screen's only purpose is to show to customers what they already ordered. They are not able to edit anything from this list.
-
+___
 <!-- TOC --><a name="requirements"></a>
 # Requirements
 This app uses React for the front-end and Django for the back-end.
 You will need Nodejs, NPM, and Python > 3.8 on your machine.
-
+___
 <!-- TOC --><a name="installation"></a>
 # Installation
 ``git clone git@github.com:thomas-figved/qrestau.git .``
@@ -217,7 +217,7 @@ Then start the python server
 
 ``python manage.py runserver``
 
-
+___
 
 <!-- TOC --><a name="front-end-react"></a>
 ## Front end (React)
@@ -246,7 +246,7 @@ You might need to authorize the front-end URL in Django's allowed origins: qrest
   'http://localhost:3000',
   'http://127.0.0.1:3000',
 ]``
-
+___
 
 <!-- TOC --><a name="build-front-end"></a>
 # Build (Front end)
@@ -258,7 +258,7 @@ Install dependencies if not done already
 
 Run the build
 ``npm run build``
-
+___
 <!-- TOC --><a name="technical-details"></a>
 # Technical details
 
@@ -268,7 +268,7 @@ This diagram gives an idea about the structure of the model (but for a more exac
 
 ![QRestau](https://github.com/thomas-figved/qrestau/assets/28971514/41bec913-1d95-471b-aa75-c67fcf11c1f9)
 
-
+___
 <!-- TOC --><a name="todo"></a>
 # TODO
 1. Error management
