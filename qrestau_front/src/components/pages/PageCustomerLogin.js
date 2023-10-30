@@ -8,9 +8,9 @@ function PageCustomerLogin() {
 
   return (
     <>
-      <h1>Welcome to nani nana</h1>
+      <h1>QRestau</h1>
 
-      <div>Please enter the password for your table to start ordering</div>
+      <div>Please enter the password for your table to start ordering.</div>
 
 
       <Login forStaff={false}/>

@@ -11,6 +11,8 @@ import ReactToPrint from 'react-to-print';
 
 import {useAPI} from 'contexts/APIContext';
 
+const subfolder = process.env.REACT_APP_INSTALLATION_SUBFOLDER === "/" ? "": "/"+process.env.REACT_APP_INSTALLATION_SUBFOLDER
+
 function PageStaffTableDetails(props) {
   const {fetchData} = useAPI();
 
@@ -192,9 +194,10 @@ function PageStaffTableDetails(props) {
         <div className="page-wrap__qrcode">
           <QRCode
             style={{ height: "auto", maxWidth: "100%", width: "100%" }}
-            value={`${window.location.protocol}//${window.location.host}${process.env.PUBLIC_URL}/customer/tables/${table.id}`}
+            value={`${window.location.protocol}//${window.location.host}${subfolder}/customer/tables/${table.id}`}
             ref={qrcodeRef}
           />
+
           <div className="page-wrap__qrcode-print">
             <ReactToPrint
               trigger={() => {
